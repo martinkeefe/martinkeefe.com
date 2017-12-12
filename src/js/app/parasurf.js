@@ -193,13 +193,11 @@ import boys_1 from './parasurf/boys-1'
 			y += dy;
 
 			var ani_chk = new gui.CheckBox( {x: x, y: y, text: "Tumble", selected: false, width: 14, height:14} );
-			ani_chk.value.bind(function(v) {
-				animate = v;
-			});
+			ani_chk.value.bind(v => animate = v);
 			y += dy;
 
 			var wire_chk = new gui.CheckBox( {x: x, y: y, text: "Wireframe", selected: true, width: 14, height:14} );
-			wire_chk.value.bind(function(v) {
+			wire_chk.value.bind(v => {
 				show_wires = v;
 				if (show_wires) group.add(wire_lines);
 				else			group.remove(wire_lines);
@@ -207,7 +205,7 @@ import boys_1 from './parasurf/boys-1'
 			y += dy;
 
 			var face_chk = new gui.CheckBox( {x: x, y: y, text: "Surface", selected: true, width: 14, height:14} );
-			face_chk.value.bind(function(v) {
+			face_chk.value.bind(v => {
 				show_faces = v;
 				if (show_faces) group.add(body_mesh);
 				else			group.remove(body_mesh);
@@ -215,7 +213,7 @@ import boys_1 from './parasurf/boys-1'
 			y += dy;
 
 			var axes_chk = new gui.CheckBox( {x: x, y: y, text: "Axes", selected: true, width: 14, height:14} );
-			axes_chk.value.bind(function(v) {
+			axes_chk.value.bind(v => {
 				show_axes = v;
 				if (show_axes)	group.add(axes);
 				else			group.remove(axes);
@@ -223,7 +221,7 @@ import boys_1 from './parasurf/boys-1'
 			y += dy;
 
 			var xy_chk = new gui.CheckBox( {x: x, y: y, text: "XY Plane", selected: true, width: 14, height:14} );
-			xy_chk.value.bind(function(v) {
+			xy_chk.value.bind(v => {
 				show_xyplane = v;
 				if (show_xyplane)	group.add(xyplane);
 				else				group.remove(xyplane);
@@ -231,7 +229,7 @@ import boys_1 from './parasurf/boys-1'
 			y += dy;
 
 			var rgb_chk = new gui.CheckBox( {x: x, y: y, text: "RGB Normals", selected: false, width: 14, height:14} );
-			rgb_chk.value.bind(function(v) {
+			rgb_chk.value.bind(v => {
 				use_normals = v;
 				makeScene();
 				root.remove( group );
@@ -241,10 +239,10 @@ import boys_1 from './parasurf/boys-1'
 			y += dy;
 
 			var ex_chks = [];
-			extras.forEach(function(extra) {
+			extras.forEach(extra => {
 				var chk  = new gui.CheckBox( {x: x, y: y, text: extra.name, selected: extra.show, width: 14, height:14} );
 				ex_chks.push(chk);
-				chk.value.bind(function(v) {
+				chk.value.bind(v => {
 					extra.show = v;
 					if (extra.show)	group.add(extra.group);
 					else			group.remove(extra.group);
@@ -257,13 +255,13 @@ import boys_1 from './parasurf/boys-1'
 				new gui.Label( {x: x, y: y+4, text: "Parameters:"} );
 				y += dy;
 
-				shape.param.forEach(function (p, i) {
+				shape.param.forEach((p, i) => {
 					param[i] = p.init;
 
 					new gui.Label( {x: x, y: y+2, text: p.name, height: 14} );
 					var slide = new gui.HSlider( {x:x+20, y:y, value: p.init, min: p.min, max: p.max,
 						decimals: 1, height: 14, width: 120} );
-					slide.value.bind(function(v) {
+					slide.value.bind(v => {
 						param[i] = v;
 						root.remove( group );
 						group = makeShape();
@@ -277,18 +275,18 @@ import boys_1 from './parasurf/boys-1'
 			new gui.Label( {x: x, y: y+4, text: "Domain:"} );
 			y += dy;
 
-			shape.domain.forEach(function (d, i) {
+			shape.domain.forEach((d, i) => {
 
 				new gui.Label( {x: x, y: y+2, text: d.name, height: 14} );
 				var slide = new gui.RangeSlider( {x:x+20, y:y, value1: 0.0001, value2: 1.0, min: 0, max: 1,
 					decimals: 1, height: 14, width: 120} );
-				slide.value1.bind(function(v) {
+				slide.value1.bind(v => {
 					dom[i] = domain(d, v, slide.value2.v);
 					root.remove( group );
 					group = makeShape();
 					root.add( group );
 				});
-				slide.value2.bind(function(v) {
+				slide.value2.bind(v => {
 					dom[i] = domain(d, slide.value1.v, v);
 					root.remove( group );
 					group = makeShape();
@@ -324,7 +322,7 @@ import boys_1 from './parasurf/boys-1'
 				group.add( axes );
 
 
-			extras.forEach(function(extra, i) {
+			extras.forEach((extra, i) => {
 				extra.geom = extra.calc(dom[0], dom[1], param, t); //, bands(1,3)),
 				extra.group = new THREE.Object3D();
 
@@ -333,7 +331,7 @@ import boys_1 from './parasurf/boys-1'
 				//	extra.group.add(extra.surface);
 				//}
 				if (Array.isArray(extra.geom)) {
-					extra.geom.forEach(function(g) {
+					extra.geom.forEach(g => {
 						extra.group.add(new THREE.LineSegments( g.clone(), extra_wire_material[i % 3] ));
 					});
 				} else {

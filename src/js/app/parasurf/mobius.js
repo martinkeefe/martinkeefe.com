@@ -60,9 +60,9 @@ export default function() {
                         var w = p[1];
                         var u = u_dom.off + _u * u_dom.scale;
                         var v = v_dom.off + _v * v_dom.scale;
-                        x = (1 + w*v*cos(u/2)) * cos(u) * r,
-                        y = (1 + w*v*cos(u/2)) * sin(u) * r,
-                        z = w*v*sin(u/2);
+                        var x = (1 + w*v*cos(u/2)) * cos(u) * r;
+                        var y = (1 + w*v*cos(u/2)) * sin(u) * r;
+                        var z = w*v*sin(u/2);
                     return {xyz: [x,y,z], uv0: [u,v,0]};
                     }
                 }
@@ -73,9 +73,9 @@ export default function() {
                         var w = p[1];
                         var u = u_dom.off + _u * u_dom.scale;
                         var v = v_dom.off + _v * v_dom.scale;
-                        x = (1 + w*v*cos(u/2)) * cos(u) * r,
-                        y = (1 + w*v*cos(u/2)) * sin(u) * r,
-                        z = w*v*sin(u/2);
+                        var x = (1 + w*v*cos(u/2)) * cos(u) * r;
+                        var y = (1 + w*v*cos(u/2)) * sin(u) * r;
+                        var z = w*v*sin(u/2);
                     return {xyz: [x,y,z], uv0: [u,v,0]};
                     }
                 }

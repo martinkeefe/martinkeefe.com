@@ -1,9 +1,10 @@
-@import 'https://fonts.googleapis.com/css?family=Lato';
-@import 'https://fonts.googleapis.com/css?family=Alegreya:400,400i,700,700i,900,900i&subset=latin-ext';
-@import 'https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,400i,700,700i&subset=cyrillic,greek,latin-ext';
+@import url('https://fonts.googleapis.com/css?family=Lato');
+/*@import url('https://fonts.googleapis.com/css?family=Alegreya:400,400i,700,700i,900,900i&subset=latin-ext');*/
+@import url('https://fonts.googleapis.com/css?family=Vollkorn:400,400i,700,700i&subset=cyrillic,greek,latin-ext');
+@import url('https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,400i,700,700i&subset=cyrillic,greek,latin-ext');
 
 /*@import 'https://fonts.googleapis.com/css?family=Noto+Serif:400,400i,700,700i&subset=cyrillic,greek,latin-ext';*/
-@import 'https://fonts.googleapis.com/css?family=Tinos:400,400i,700,700i&subset=cyrillic,greek,latin-ext';
+@import url('https://fonts.googleapis.com/css?family=Tinos:400,400i,700,700i&subset=cyrillic,greek,latin-ext');
 
 @import url(h5bp.css);
 @import url(hilite.css);
@@ -17,7 +18,7 @@ html {overflow-y: scroll; }
 body {
 	color: #BBB;
 	background-color: rgb(54,50,65); /* 10PB 2/2 */
-	font-family: 'Alegreya', Tinos, serif;
+	font-family: 'Vollkorn', Tinos, serif;
 	font-size: 18px;
 	margin: 20px;
 }
@@ -192,7 +193,7 @@ div.body {
 div.update {
 	color: rgb(98,95,111); /* 10PB 4/2 */
 	margin-top: 1em;
-	font-size: 80%;
+	-font-size: 80%;
 	padding-top: 0.25em;
 	border-top: rgb(98,95,111) 1px solid;
 }

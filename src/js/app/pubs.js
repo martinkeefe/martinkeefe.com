@@ -2,11 +2,12 @@ import 'leaflet'
 
 import {get_csv} from './lib'
 import '../lib/L.LabelTextCollision'
+import '../lib/leaflet-beautify-marker-icon'
 //import '../lib/L.OSGraticule'
 
 var CENTRE = new L.LatLng(51.23, -0.34); // Dorking
 //var CENTRE = new L.LatLng(51.3182612,-0.2323152); // Banstead
-var RADIUS = 12000;
+var RADIUS = 15000;
 var STATES = ['bone','gone','dead','open','limbo']; // In drawing order
 	var COLOR = {
 		open: '#4A4',
@@ -22,17 +23,18 @@ var DATA = [];
 var DOTS = [];
 var SOLO = null;
 
-var map_url = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png';
+var map_url = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/dark_labels_under/{z}/{x}/{y}.png';
+//var map_url2 = 'http://nls-{s}.tileserver.com/nls/{z}/{x}/{y}.jpg';
 var map_att = '&copy; <a href="http://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attribution" target="_blank">CARTO</a>';
 
 function render(renderer) {
-	DOTS.forEach(function(dot) {
+	DOTS.forEach(dot => {
 		MAP.removeLayer(dot);
 		//delete dot;
 	});
 	DOTS = [];
 
-	STATES.forEach(function(status) {
+	STATES.forEach(status => {
 		if (SOLO && status !== SOLO) {
 			return;
 		}
@@ -42,7 +44,7 @@ function render(renderer) {
 			return;
 		}
 
-		DATA.forEach(function(pub) {
+		DATA.forEach(pub => {
 			//if (pub.status === status && pub.lat && pub.lon) {
 			if (pub.status === status && pub.lat && pub.lon && !pub.hide) {
 				var latlng = new L.LatLng(pub.lat,pub.lon);
@@ -50,18 +52,58 @@ function render(renderer) {
 					return;
 				}
 
-				var circle = L.circleMarker([pub.lat, pub.lon], {
-				    color: COLOR[pub.status],
-				    opacity: 0.5,
-				    //stroke: false,
-				    fillColor: COLOR[pub.status],
-				    fillOpacity: 1,
-				    weight: 15,
-				    radius: 3,
+				//var circle = L.circleMarker([pub.lat, pub.lon], {
+				//    color: COLOR[pub.status],
+				//    opacity: 0.5,
+				//    //stroke: false,
+				//    fillColor: COLOR[pub.status],
+				//    fillOpacity: 1,
+				//    weight: 15,
+				//    radius: 3,
+				//    text: pub.name,
+				//    textColor: COLOR[pub.status],
+				//}).addTo(MAP);
+				////circle.bindTooltip(pub.name + (pub.closed ? ' (' + pub.closed + ')' : ''));
+				var label = L.circleMarker([pub.lat, pub.lon], {
+				//    color: COLOR[pub.status],
+				//    opacity: 0.5,
+				//    //stroke: false,
+				//    fillColor: COLOR[pub.status],
+				//    fillOpacity: 1,
+				//    weight: 15,
+				    radius: 0,
 				    text: pub.name,
 				    textColor: COLOR[pub.status],
 				}).addTo(MAP);
-				//circle.bindTooltip(pub.name + (pub.closed ? ' (' + pub.closed + ')' : ''));
+
+				var circle;
+				if (pub.kind === 'bar') {
+					circle = L.marker([pub.lat, pub.lon], {
+					    icon: L.BeautifyIcon.icon({
+						    iconShape: 'circle-dot',
+						    borderColor: COLOR[pub.status],
+						    borderWidth: 5,
+					    }),
+					}).addTo(MAP);
+				}
+				else if (pub.kind === 'hotel') {
+					circle = L.marker([pub.lat, pub.lon], {
+					    icon: L.BeautifyIcon.icon({
+						    iconShape: 'rectangle-dot',
+						    borderColor: COLOR[pub.status],
+						    borderWidth: 6,
+					    }),
+					}).addTo(MAP);
+				}
+				else {
+					circle = L.marker([pub.lat, pub.lon], {
+					    icon: L.BeautifyIcon.icon({
+						    iconShape: 'doughnut',
+						    borderColor: COLOR[pub.status],
+						    borderWidth: 5,
+					    }),
+					}).addTo(MAP);
+				}
 
 				var popup = '<b>'+pub.name+'</b>';
 				if (pub.url) {
@@ -108,6 +150,7 @@ function render(renderer) {
 				circle.bindPopup('<div style="font-family: Lato, sans-serif; font-size: 14px; max-width: 150px;">'+popup+'</div>');
 
 				DOTS.push(circle);
+				DOTS.push(label);
 			}
 		});
 	});
@@ -119,14 +162,12 @@ function render(renderer) {
 
 
 function setup() {
-	STATES.forEach(function(status) {
+	STATES.forEach(status => {
 		var chk = document.getElementById(status+'-chk');
-		chk.addEventListener('click', function(e) {
-			render(RENDERER);
-		});
+		chk.addEventListener('click', e => render(RENDERER));
 
 		var btn = document.getElementById(status+'-btn');
-		btn.addEventListener('click', function(e) {
+		btn.addEventListener('click', e => {
 			if (SOLO === status) {
 				btn.checked = false;
 				SOLO = null;
@@ -134,7 +175,7 @@ function setup() {
 			else {
 				SOLO = status;
 			}
-			STATES.forEach(function(s) {
+			STATES.forEach(s => {
 				var c = document.getElementById(s+'-chk');
 				c.disabled = !!SOLO;
 			});
@@ -149,7 +190,7 @@ function setup() {
 
 	MAP = L.map('mapid', {
 		center: CENTRE,
-		maxBounds: CENTRE.toBounds(2*RADIUS),
+		maxBounds: CENTRE.toBounds(2*RADIUS + 5000),
 		zoom: 11,
 		renderer : RENDERER,
 	});
@@ -160,6 +201,7 @@ function setup() {
 	    attribution: map_att,
 	    minZoom: 11,
 	    maxZoom: 18,
+	    //subdomains: '0123',
 	}).addTo(MAP);
 
 	//L.control.scale().addTo(map);
@@ -172,10 +214,11 @@ function setup() {
 }
 
 export default function() {
-	get_csv('/data/pubs.csv')
-		.then(function(data) {
+	get_csv('/data/pubs.csv').then(
+		data => {
 			DATA = data
 			setup()
 			render()
-		});
+		}
+	);
 };

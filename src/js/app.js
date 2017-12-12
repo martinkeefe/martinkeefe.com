@@ -6,10 +6,10 @@ import jax from './app/jax'
 import parasurf from './app/parasurf'
 import pubs from './app/pubs'
 
-MathJax.Hub.Config({
-	extensions: ["tex2jax.js"],
-	"HTML-CSS": { scale: 90, availableFonts: [], webFont: "TeX"}
-});
+//MathJax.Hub.Config({
+//	extensions: ["tex2jax.js"],
+//	"HTML-CSS": { scale: 90, availableFonts: [], webFont: "TeX"}
+//});
 
 const FUNC = {
 	'front' : front,
