@@ -4,11 +4,9 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-//const VendorChunkPlugin = require('webpack-vendor-chunk-plugin');
 
 module.exports = {
-	//entry: './src/js/main.jsx',
-	entry: {//'./src/js/index.js',
+	entry: {
 		app: './src/js/index.js',
     	vendor: [
     		'three',
@@ -22,7 +20,6 @@ module.exports = {
 	},
 	output: {
 		filename: '[name].bundle.js',
-		//path: '/my/web/sites/martinkeefe.com-webpack/dist'
 		path: path.resolve(__dirname, 'dist')
 	},
 	resolve: {
@@ -64,7 +61,6 @@ module.exports = {
      	new webpack.optimize.CommonsChunkPlugin({
      		name: 'vendor' // Specify the common bundle's name.
      	}),
-     	//new VendorChunkPlugin('vendor'),
 	],
 	//sassLoader: {
     //    includePaths: [ './src/css' ]
