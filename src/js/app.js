@@ -1,4 +1,4 @@
-import {get,get_csv,title} from './app/lib'
+import {title} from './app/lib'
 
 // =============================================================================
 // Derived from https://github.com/miazukee/restlite
@@ -15,50 +15,21 @@ function route() {
 		routes[r](); //a);
 	else if(routes[error404] !== undefined)
 		routes[error404](); //a);
-};
+}
 
 function navto(r) {
 	console.log('NAVTO', r);
 	history.pushState({}, '', r);
 	route();
-};
-
-//export function render(id, path, success) {
-//	if (path) {
-//		get('/html/' + path + '.html')
-//			.then(response => {
-//				var el = document.getElementById(id);
-//				el.innerHTML = response;
-//				if (success) {
-//					success();
-//				}
-//
-//				var host = window.location.href.split('/')[2];
-//				for (var i = 0; i < document.links.length; i++) {
-//					var link = document.links[i];
-//					if (link.href) {
-//						var href = link.href.split('/');
-//						//console.log(href)
-//						if (href[2] === host) {// && href[3] !== 'pub-watch#') {
-//							(function(dst) {
-//								link.onclick = e => {
-//									e.preventDefault();
-//									e.stopPropagation();
-//									navto(dst);
-//								};
-//							})('/' + href.slice(3).join('/'));
-//						}
-//					}
-//				}
-//			});
-//	}
-//};
+}
 
 export function render(id, path, success) {
 	if (path) {
 		var el = document.getElementById(id);
 		el.innerHTML = require('../html/' + path + '.html')
-		success();
+		if (success) {
+			success();
+		}
 
 		var host = window.location.href.split('/')[2];
 		for (var i = 0; i < document.links.length; i++) {
@@ -66,7 +37,7 @@ export function render(id, path, success) {
 			if (link.href) {
 				var href = link.href.split('/');
 				//console.log(href)
-				if (href[2] === host) {// && href[3] !== 'pub-watch#') {
+				if (href[2] === host && !href[3].endsWith('#')) {
 					(function(dst) {
 						link.onclick = e => {
 							e.preventDefault();
@@ -78,7 +49,7 @@ export function render(id, path, success) {
 			}
 		}
 	}
-};
+}
 
 //window.addEventListener('hashchange', function() {
 window.addEventListener('popstate', e => {
@@ -87,7 +58,7 @@ window.addEventListener('popstate', e => {
 });
 
 
-function start() {
+export function start() {
 	console.log('START');
 
 	// cols: 'route','ttl','outer','inner','fn','args','tags','date'
@@ -123,5 +94,5 @@ function start() {
 	route();
 }
 
+// =============================================================================
 
-start()

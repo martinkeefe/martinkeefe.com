@@ -21,11 +21,11 @@ class S(BaseHTTPRequestHandler):
         _,ext = os.path.splitext(self.path)
         #print self.path#, ext
         if ext:
-            if os.path.exists('pub'+self.path):
+            if os.path.exists('dist'+self.path):
                 self.send_response(200)
                 self.send_header('Content-type', MEDIA[ext])
                 self.end_headers()
-                f = open('pub'+self.path, 'rb')
+                f = open('dist'+self.path, 'rb')
                 self.wfile.write(f.read())
                 f.close()
             else:
@@ -35,7 +35,7 @@ class S(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
-            f = open('pub/index.html')
+            f = open('dist/index.html')
             self.wfile.write(f.read())
             f.close()
 

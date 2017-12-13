@@ -10,36 +10,36 @@
 //};
 
 // https://developers.google.com/web/fundamentals/getting-started/primers/promises#promisifying_xmlhttprequest
-export function get(url) {
-	// Return a new promise.
-	return new Promise((resolve, reject) => {
-		// Do the usual XHR stuff
-		var req = new XMLHttpRequest();
-		req.open('GET', url);
-
-		req.onload = () => {
-			// This is called even on 404 etc
-			// so check the status
-			if (req.status == 200) {
-				// Resolve the promise with the response text
-				resolve(req.response);
-			}
-			else {
-				// Otherwise reject with the status text
-				// which will hopefully be a meaningful error
-				reject(Error(req.statusText));
-			}
-		};
-
-		// Handle network errors
-		req.onerror = () => {
-			reject(Error("Network Error"));
-		};
-
-		// Make the request
-		req.send();
-	});
-};
+//export function get(url) {
+//	// Return a new promise.
+//	return new Promise((resolve, reject) => {
+//		// Do the usual XHR stuff
+//		var req = new XMLHttpRequest();
+//		req.open('GET', url);
+//
+//		req.onload = () => {
+//			// This is called even on 404 etc
+//			// so check the status
+//			if (req.status == 200) {
+//				// Resolve the promise with the response text
+//				resolve(req.response);
+//			}
+//			else {
+//				// Otherwise reject with the status text
+//				// which will hopefully be a meaningful error
+//				reject(Error(req.statusText));
+//			}
+//		};
+//
+//		// Handle network errors
+//		req.onerror = () => {
+//			reject(Error("Network Error"));
+//		};
+//
+//		// Make the request
+//		req.send();
+//	});
+//};
 
 //export function get_csv(url, cols) {
 //	return new Promise((resolve, reject) => {
@@ -74,68 +74,68 @@ export function title(ttl) {
 
 
 
-function _mk_element(args, ns) {
-    var el = args[0].split('.');
-    var cls = (el.length > 1) ? el.slice(1) : [];
-    var id = el[0].split('#');
-
-    if (ns) {
-        el = document.createElementNS(ns, id[0]);
-    } else {
-        el = document.createElement(id[0]);
-    }
-    if (id.length > 1) {
-        el.setAttribute('id', id[1]);
-    }
-    if (cls) {
-        if (cls.length > 0)
-            el.setAttribute('class', cls.join(' '));
-    }
-
-    args.slice(1).forEach(function (arg) {
-        if (arg != null) {
-            if (arg.constructor == Object) {
-                Object.keys(arg).forEach(function (key) {
-                    //if (key === 'd') {
-                    //    console.log(arg);
-                    //}
-                    el.setAttribute(key, arg[key]);
-                });
-            } else if (Array.isArray(arg)) {
-                arg.forEach(function (a) {
-                    if (typeof a === 'string')
-                        a = document.createTextNode(a);
-                    el.appendChild(a);
-                });
-            } else {
-                if (typeof arg === 'string') {
-                    //arg = s.replaceAll(arg, '&', 'and');
-                    arg = document.createTextNode(arg);
-                }
-                el.appendChild(arg);
-            }
-        }
-    });
-
-    return el;
-}
-
-export function $h(...args) {
-    //var args = Array.prototype.slice.call(arguments);
-    return _mk_element(args);
-}
-
-export function $v(...args) {
-    //var args = Array.prototype.slice.call(arguments);
-    return _mk_element(args, 'http://www.w3.org/2000/svg');
-}
+//function _mk_element(args, ns) {
+//    var el = args[0].split('.');
+//    var cls = (el.length > 1) ? el.slice(1) : [];
+//    var id = el[0].split('#');
+//
+//    if (ns) {
+//        el = document.createElementNS(ns, id[0]);
+//    } else {
+//        el = document.createElement(id[0]);
+//    }
+//    if (id.length > 1) {
+//        el.setAttribute('id', id[1]);
+//    }
+//    if (cls) {
+//        if (cls.length > 0)
+//            el.setAttribute('class', cls.join(' '));
+//    }
+//
+//    args.slice(1).forEach(function (arg) {
+//        if (arg != null) {
+//            if (arg.constructor == Object) {
+//                Object.keys(arg).forEach(function (key) {
+//                    //if (key === 'd') {
+//                    //    console.log(arg);
+//                    //}
+//                    el.setAttribute(key, arg[key]);
+//                });
+//            } else if (Array.isArray(arg)) {
+//                arg.forEach(function (a) {
+//                    if (typeof a === 'string')
+//                        a = document.createTextNode(a);
+//                    el.appendChild(a);
+//                });
+//            } else {
+//                if (typeof arg === 'string') {
+//                    //arg = s.replaceAll(arg, '&', 'and');
+//                    arg = document.createTextNode(arg);
+//                }
+//                el.appendChild(arg);
+//            }
+//        }
+//    });
+//
+//    return el;
+//}
+//
+//export function $h(...args) {
+//    //var args = Array.prototype.slice.call(arguments);
+//    return _mk_element(args);
+//}
+//
+//export function $v(...args) {
+//    //var args = Array.prototype.slice.call(arguments);
+//    return _mk_element(args, 'http://www.w3.org/2000/svg');
+//}
 
 export function $i(id) { return document.getElementById(id); }
 
-export function $(str) {
-	// https://davidwalsh.name/convert-html-stings-dom-nodes
-	return document.createRange().createContextualFragment(str)
-}
+//export function $(str) {
+//	// https://davidwalsh.name/convert-html-stings-dom-nodes
+//	return document.createRange().createContextualFragment(str)
+//}
 
 export function $one(str) {
 	// https://davidwalsh.name/convert-html-stings-dom-nodes

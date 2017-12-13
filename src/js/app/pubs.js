@@ -1,15 +1,18 @@
 import 'leaflet'
 
-//import {get_csv} from './lib'
+import '../../css/leaflet.css'
+import '../../css/font-awesome.min.css'
+import '../../css/leaflet-beautify-marker-icon.css'
+
 import '../lib/L.LabelTextCollision'
 import '../lib/leaflet-beautify-marker-icon'
 //import '../lib/L.OSGraticule'
 
-var CENTRE = new L.LatLng(51.23, -0.34); // Dorking
+const CENTRE = new L.LatLng(51.23, -0.34); // Dorking
 //var CENTRE = new L.LatLng(51.3182612,-0.2323152); // Banstead
-var RADIUS = 15000;
-var STATES = ['bone','gone','dead','open','limbo']; // In drawing order
-	var COLOR = {
+const RADIUS = 15000;
+const STATES = ['bone','gone','dead','open','limbo']; // In drawing order
+const COLOR = {
 		open: '#4A4',
 		limbo:'#F00',
 		dead: '#CA0',
@@ -17,11 +20,26 @@ var STATES = ['bone','gone','dead','open','limbo']; // In drawing order
 		bone: '#66F',
 	}
 
-var MAP;
-var RENDERER;
-var DATA = [];
-var DOTS = [];
-var SOLO = null;
+let MAP;
+let RENDERER;
+let DATA = [];
+let DOTS = [];
+let SOLO = null;
+
+const IMGS = {
+	'/img/pub/burgh-heath-sheepshearers-arms.jpg': require('../../img/pub/burgh-heath-sheepshearers-arms.jpg'),
+	'/img/pub/leatherhead-kings-head-2a.png': require('../../img/pub/leatherhead-kings-head-2a.png'),
+	'/img/pub/leatherhead-prince-of-wales-a.png': require('../../img/pub/leatherhead-prince-of-wales-a.png'),
+	'/img/pub/leatherhead-rising-sun-1a.png': require('../../img/pub/leatherhead-rising-sun-1a.png'),
+	'/img/pub/reigate-eagle-map.png': require('../../img/pub/reigate-eagle-map.png'),
+};
+//const IMG_SRCS = [
+//	'/img/pub/burgh-heath-sheepshearers-arms.jpg',
+//	'/img/pub/leatherhead-kings-head-2a.png',
+//	'/img/pub/leatherhead-prince-of-wales-a.png',
+//	'/img/pub/leatherhead-rising-sun-1a.png',
+//	'/img/pub/reigate-eagle-map.png',
+//];
 
 var map_url = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/dark_labels_under/{z}/{x}/{y}.png';
 //var map_url2 = 'http://nls-{s}.tileserver.com/nls/{z}/{x}/{y}.jpg';
@@ -123,6 +141,7 @@ function render(renderer) {
 
 				if (pub.img) {
 					var img = pub.img.split('|').pop();
+					img = IMGS[img] || img;
 					popup += '<br/><a href="'+img+'" target="_blank"><img src="'+img+'" width="150"/></a>';
 				}
 
@@ -183,6 +202,10 @@ function setup() {
 			render(RENDERER);
 		});
 	})
+
+	//IMG_SRCS.forEach(img => {
+	//	IMGS[img] = require('../..'+img)
+	//});
 
 	RENDERER = new L.LabelTextCollision({
 	  	collisionFlg : true
