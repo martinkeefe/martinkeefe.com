@@ -1,17 +1,15 @@
-import {$i,$one,strerp,get_csv} from './lib'
+import {$i,$one} from './lib'
 
-var mnm_num;
-var items;
-var index;
-var audio = $one('<audio controls></audio>')
+let items;
+let index;
+const audio = $one('<audio controls></audio>')
 
 function play() {
 	console.log(' play', index);
 	if (index < items.length) {
-		var src = strerp('http://s3-eu-west-1.amazonaws.com/raiment57/mnm{{mnm_num}}/{{trk_num}}.mp3', items[index]);
-		items[index].item.classList.add('active');
-    	items[index].item.appendChild(audio);
-    	audio.setAttribute('src', src);
+		items[index].classList.add('active');
+    	items[index].appendChild(audio);
+    	audio.setAttribute('src', items[index].src);
     	audio.play();
     }
 }
@@ -19,8 +17,8 @@ function play() {
 function stop() {
 	console.log(' stop', index);
 	if (index < items.length) {
-		items[index].item.classList.remove('active');
-		items[index].item.removeChild(audio);
+		items[index].classList.remove('active');
+		items[index].removeChild(audio);
 	}
 }
 
@@ -42,46 +40,34 @@ function go_to(idx) {
 export default function(num) {
 	audio.addEventListener("ended", next);
 
-	mnm_num = num = ('0' + num).substr(-2);
-    get_csv('/data/mnm/mnm'+num+'.csv', ['art_name', 'trk_name', '', 'alb_name', '', 'alb_year'])
-    	.then(recs => {
-		    var playlist = $i('playlist');
-		    var template =
-		    		`<div class="item">
-						<img src="http://s3-eu-west-1.amazonaws.com/raiment57/mnm{{mnm_num}}/{{trk_num}}.jpg">
-						<div class="data">
-							<p><big>{{trk_num}}</big></p>
-							<p><b>{{art_name}}</b></p>
-							<p>&ldquo;{{trk_name}}&rdquo;</p>
-							<p><i>{{alb_name}}</i>, {{alb_year}}</p>
-						</div>
-					</div>`
+	const mnm_num = ('0' + num).substr(-2);
+    const recs = require('../../data/mnm/mnm'+mnm_num+'.csv')
+    const playlist = $i('playlist');
 
-			$i('title').textContent = recs[0].art_name
-			$i('intro').innerHTML = recs[0].trk_name || ''
+	$i('title').textContent = recs[0].art_name
+	$i('intro').innerHTML = recs[0].trk_name || ''
 
-		    items = [];
-		    playlist.innerHTML = ''
-			recs.forEach(function(rec, i) {
-				if (i > 0) {
-					var info = {
-						mnm_num: mnm_num,
-						trk_num: ('0' + i).substr(-2),
-						art_name: rec.art_name,
-						trk_name: rec.trk_name,
-						alb_name: rec.alb_name,
-						alb_year: rec.alb_year,
-					};
-					info.item = $one(strerp(template, info))
-					info.item.addEventListener('click', function() {
-						go_to(i-1);
-					});
-					items.push(info);
-					playlist.appendChild(info.item);
-				}
-			});
+    items = [];
+    playlist.innerHTML = ''
+	recs.slice(1).forEach((rec, i) => {
+		const trk_num = ('0' + (i+1)).substr(-2);
+	    const s3_src = `http://s3-eu-west-1.amazonaws.com/raiment57/mnm${mnm_num}/${trk_num}`
+		const item = $one(
+			`<div class="item">
+				<img src="${s3_src}.jpg">
+				<div class="data">
+					<p><big>${trk_num}</big></p>
+					<p><b>${rec.art_name}</b></p>
+					<p>&ldquo;${rec.trk_name}&rdquo;</p>
+					<p><i>${rec.alb_name}</i>, ${rec.alb_year}</p>
+				</div>
+			</div>`)
+		item.src = s3_src + '.mp3';
+		item.addEventListener('click', () => go_to(i));
+		items.push(item);
+		playlist.appendChild(item);
+	});
 
-		    index = 0;
-			play();
-    	})
-};
+    index = 0;
+	play();
+}

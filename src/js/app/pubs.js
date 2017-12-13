@@ -1,6 +1,6 @@
 import 'leaflet'
 
-import {get_csv} from './lib'
+//import {get_csv} from './lib'
 import '../lib/L.LabelTextCollision'
 import '../lib/leaflet-beautify-marker-icon'
 //import '../lib/L.OSGraticule'
@@ -214,11 +214,8 @@ function setup() {
 }
 
 export default function() {
-	get_csv('/data/pubs.csv').then(
-		data => {
-			DATA = data
-			setup()
-			render()
-		}
-	);
-};
+	DATA = require('../../data/pubs.csv')
+
+	setup()
+	render()
+}

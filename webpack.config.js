@@ -21,7 +21,8 @@ module.exports = {
 		loaders: [
 			//{test: /\.(css|sass|scss)$/, loader: ExtractTextPlugin.extract('style', 'css?sourceMap!sass?sourceMap')},
 			{test: /\.(js)$/, exclude: /node_modules/, loader: 'babel-loader'},
-			{test: /\.html$/, loader: "html-loader"}
+			{test: /\.html$/, loader: "html-loader"},
+			{test: /\.(c|d|t)sv$/, loader: 'dsv-loader?delimiter=;'}
 		]
 	},
 	plugins: [

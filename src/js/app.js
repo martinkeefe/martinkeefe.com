@@ -89,40 +89,38 @@ window.addEventListener('popstate', e => {
 
 function start() {
 	console.log('START');
-	//var cols = ['route','ttl','outer','inner','fn','args','tags','date'];
-	get_csv('/data/index.csv').then(
-		data => {
-			data.forEach(r => {
-				routes[r.route] = function() {
-					title(r.ttl);
-					var done = null;
-					if (r.fn) {
-						const fn = require(`./app/${r.fn}`).default
-						done = () => fn.apply(window, r.args.split('|'));
+
+	// cols: 'route','ttl','outer','inner','fn','args','tags','date'
+	const data = require('../data/index.csv')
+
+	data.forEach(r => {
+		routes[r.route] = function() {
+			title(r.ttl);
+			var done = null;
+			if (r.fn) {
+				const fn = require(`./app/${r.fn}`).default
+				done = () => fn.apply(window, r.args.split('|'));
+			}
+			render('content', r.outer, () => {
+				if (r.date) {
+					var els = document.getElementsByClassName('body');
+					if (els.length > 0) {
+						els[0].insertAdjacentHTML('beforeend', '<div class="update">Last update: '+r.date+'</div>');
 					}
-					render('content', r.outer, () => {
-						if (r.date) {
-							var els = document.getElementsByClassName('body');
-							if (els.length > 0) {
-								els[0].insertAdjacentHTML('beforeend', '<div class="update">Last update: '+r.date+'</div>');
-							}
-						}
-						if (r.inner) {
-							render('body', r.outer + '/' + r.inner, done);
-						} else if (done) {
-							done();
-						}
-					});
-				};
+				}
+				if (r.inner) {
+					render('body', r.outer + '/' + r.inner, done);
+				} else if (done) {
+					done();
+				}
 			});
-			// Redirect old MNM pages
-			['08','09','11','14','15','18','22','23','25','27','29','31','33','34'].forEach(mnm => {
-				routes['music/mnm'+mnm] = routes['mnm-'+mnm];
-			})
-			route();
-		},
-		error => console.warn(error)
-	);
+		};
+	});
+	// Redirect old MNM pages
+	['08','09','11','14','15','18','22','23','25','27','29','31','33','34'].forEach(mnm => {
+		routes['music/mnm'+mnm] = routes['mnm-'+mnm];
+	})
+	route();
 }
 
 

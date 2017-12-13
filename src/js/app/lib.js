@@ -41,29 +41,29 @@ export function get(url) {
 	});
 };
 
-export function get_csv(url, cols) {
-	return new Promise((resolve, reject) => {
-		get(url).then(
-			function(response) {
-				var recs = response.trim('\n').split('\n').map(s => s.trim());
-
-				if (cols == null && recs.length > 0) {
-					cols = recs.shift().split(';');
-				}
-
-				var data = [];
-				recs.forEach(rec => {
-					var datum = {};
-					rec.split(';').forEach((value, i) => datum[cols[i]] = value);
-					data.push(datum);
-				});
-
-				resolve(data);
-			}
-		);
-
-	});
-};
+//export function get_csv(url, cols) {
+//	return new Promise((resolve, reject) => {
+//		get(url).then(
+//			function(response) {
+//				var recs = response.trim('\n').split('\n').map(s => s.trim());
+//
+//				if (cols == null && recs.length > 0) {
+//					cols = recs.shift().split(';');
+//				}
+//
+//				var data = [];
+//				recs.forEach(rec => {
+//					var datum = {};
+//					rec.split(';').forEach((value, i) => datum[cols[i]] = value);
+//					data.push(datum);
+//				});
+//
+//				resolve(data);
+//			}
+//		);
+//
+//	});
+//};
 
 
 export function title(ttl) {

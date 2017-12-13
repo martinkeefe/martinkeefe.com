@@ -1,8 +1,6 @@
-import {$i,$,$one,get_csv} from './lib'
+import {$i,$,$one} from './lib'
 
-let ttl;
-
-function render(data) {
+function render(ttl, data) {
     var el = $i('body');
     var dl = $one('<dl></dl>');
 
@@ -20,6 +18,5 @@ function render(data) {
 }
 
 export default function(name) {
-    ttl = name;
-    get_csv('/data/js-qref/' + name + '.csv').then(render);
+    render(name, require('../../data/js-qref/' + name + '.csv'))
 }
