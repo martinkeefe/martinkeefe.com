@@ -20,7 +20,8 @@ module.exports = {
 	module: {
 		loaders: [
 			//{test: /\.(css|sass|scss)$/, loader: ExtractTextPlugin.extract('style', 'css?sourceMap!sass?sourceMap')},
-			{test: /\.(js)$/, exclude: /node_modules/, loader: 'babel-loader'}
+			{test: /\.(js)$/, exclude: /node_modules/, loader: 'babel-loader'},
+			{test: /\.html$/, loader: "html-loader"}
 		]
 	},
 	plugins: [

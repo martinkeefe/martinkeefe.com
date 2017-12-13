@@ -1,4 +1,5 @@
-import {render,$one} from './lib'
+import {render} from '../app'
+import {$one} from './lib'
 
 function syms(elem) {
     var text = elem.innerHTML;

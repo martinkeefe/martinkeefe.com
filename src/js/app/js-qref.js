@@ -1,29 +1,25 @@
-define(function(require, exports, module) {
-    var MK = require('app/lib');
-    var $ = require('zepto');
+import {$i,$,$one,get_csv} from './lib'
 
-    var ttl;
+let ttl;
 
-    function render(data) {
-        var el = $('#body');
-        var dl = $('<dl></dl>');
+function render(data) {
+    var el = $i('body');
+    var dl = $one('<dl></dl>');
 
-        el.append('<h2>' + ttl + '</h2>');
-        el.append(dl);
+    el.appendChild($one('<h2>' + ttl + '</h2>'));
+    el.appendChild(dl);
 
-        data.forEach(function(d) {
-            dl.append(MK.strerp(
-                '<dt class="syntax">' +
-                    '<span class="es{{es}}">{{es}}</span> ' +
-                    '<a href="{{href}}" target="MDN ">{{syntax}}</a>' +
-                '</dt>' +
-                '<dd>{{txt}}</dd>',
-                d));
-        });
-    }
+    data.forEach(function(d) {
+        dl.appendChild($one(
+            `<dt class="syntax">
+                <span class="es${d.es}">${d.es}</span>
+                <a href="${d.href}" target="MDN ">${d.syntax}</a>
+            </dt>`));
+        dl.appendChild($one(`<dd>${d.txt}</dd>`));
+    });
+}
 
-    return function(name) {
-        ttl = name;
-        MK.get_csv('/data/js-qref/' + name + '.csv').then(render);
-    }
-});
+export default function(name) {
+    ttl = name;
+    get_csv('/data/js-qref/' + name + '.csv').then(render);
+}

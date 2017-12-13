@@ -1,24 +1,129 @@
-import {start} from './app/lib'
+import {get,get_csv,title} from './app/lib'
 
-import front from './app/front'
-import mnm from './app/mnm'
-import jax from './app/jax'
-import parasurf from './app/parasurf'
-import pubs from './app/pubs'
+// =============================================================================
+// Derived from https://github.com/miazukee/restlite
 
-//MathJax.Hub.Config({
-//	extensions: ["tex2jax.js"],
-//	"HTML-CSS": { scale: 90, availableFonts: [], webFont: "TeX"}
-//});
+var routes = [];
+var error404 = '#404';
 
-const FUNC = {
-	'front' : front,
-	'jax' : jax,
-	'parasurf' : parasurf,
-	'mnm' : mnm,
-	'canvas-demo' : null,
-	'js-qref' : null,
-	'pubs' : pubs,
+function route() {
+	//var r = window.location.hash.substr(1).split('?');
+	var r = window.location.pathname.substr(1);
+	//var a = r[1];
+	//r = r[0];
+	if(routes[r] !== undefined)
+		routes[r](); //a);
+	else if(routes[error404] !== undefined)
+		routes[error404](); //a);
+};
+
+function navto(r) {
+	console.log('NAVTO', r);
+	history.pushState({}, '', r);
+	route();
+};
+
+//export function render(id, path, success) {
+//	if (path) {
+//		get('/html/' + path + '.html')
+//			.then(response => {
+//				var el = document.getElementById(id);
+//				el.innerHTML = response;
+//				if (success) {
+//					success();
+//				}
+//
+//				var host = window.location.href.split('/')[2];
+//				for (var i = 0; i < document.links.length; i++) {
+//					var link = document.links[i];
+//					if (link.href) {
+//						var href = link.href.split('/');
+//						//console.log(href)
+//						if (href[2] === host) {// && href[3] !== 'pub-watch#') {
+//							(function(dst) {
+//								link.onclick = e => {
+//									e.preventDefault();
+//									e.stopPropagation();
+//									navto(dst);
+//								};
+//							})('/' + href.slice(3).join('/'));
+//						}
+//					}
+//				}
+//			});
+//	}
+//};
+
+export function render(id, path, success) {
+	if (path) {
+		var el = document.getElementById(id);
+		el.innerHTML = require('../html/' + path + '.html')
+		success();
+
+		var host = window.location.href.split('/')[2];
+		for (var i = 0; i < document.links.length; i++) {
+			var link = document.links[i];
+			if (link.href) {
+				var href = link.href.split('/');
+				//console.log(href)
+				if (href[2] === host) {// && href[3] !== 'pub-watch#') {
+					(function(dst) {
+						link.onclick = e => {
+							e.preventDefault();
+							e.stopPropagation();
+							navto(dst);
+						};
+					})('/' + href.slice(3).join('/'));
+				}
+			}
+		}
+	}
+};
+
+//window.addEventListener('hashchange', function() {
+window.addEventListener('popstate', e => {
+	console.log('POPSTATE');
+	route();
+});
+
+
+function start() {
+	console.log('START');
+	//var cols = ['route','ttl','outer','inner','fn','args','tags','date'];
+	get_csv('/data/index.csv').then(
+		data => {
+			data.forEach(r => {
+				routes[r.route] = function() {
+					title(r.ttl);
+					var done = null;
+					if (r.fn) {
+						const fn = require(`./app/${r.fn}`).default
+						done = () => fn.apply(window, r.args.split('|'));
+					}
+					render('content', r.outer, () => {
+						if (r.date) {
+							var els = document.getElementsByClassName('body');
+							if (els.length > 0) {
+								els[0].insertAdjacentHTML('beforeend', '<div class="update">Last update: '+r.date+'</div>');
+							}
+						}
+						if (r.inner) {
+							render('body', r.outer + '/' + r.inner, done);
+						} else if (done) {
+							done();
+						}
+					});
+				};
+			});
+			// Redirect old MNM pages
+			['08','09','11','14','15','18','22','23','25','27','29','31','33','34'].forEach(mnm => {
+				routes['music/mnm'+mnm] = routes['mnm-'+mnm];
+			})
+			route();
+		},
+		error => console.warn(error)
+	);
 }
 
-start(FUNC)
+
+start()
