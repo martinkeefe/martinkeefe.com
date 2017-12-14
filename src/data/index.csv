@@ -1,15 +1,15 @@
 route;ttl;outer;inner;fn;args;tags;date
 ;Martin’s Stuff;front;;front;;;2017-09-10
 maths-links;Martin’s Maths Links;maths;;;;maths;2016-09-17
-mathjax-guide-1;Martin’s MathJax Guide - Introduction;jax;;jax;1;maths|mathjax;2016-10-29
-mathjax-guide-2;Martin’s MathJax Guide - Inline math formulas and displayed equations;jax;;jax;2;maths|mathjax;2016-09-17
-mathjax-guide-3;Martin’s MathJax Guide - Math symbols and math fonts;jax;;jax;3;maths|mathjax;2016-09-17
-mathjax-guide-4;Martin’s MathJax Guide - Notations;jax;;jax;4;maths|mathjax;2016-09-17
-mathjax-guide-5;Martin’s MathJax Guide - Fractions and related constructions;jax;;jax;5;maths|mathjax;2016-09-17
-mathjax-guide-6;Martin’s MathJax Guide - Delimiters;jax;;jax;6;maths|mathjax;2016-09-17
-mathjax-guide-7;Martin’s MathJax Guide - \text and \mod;jax;;jax;7;maths|mathjax;2016-09-17
-mathjax-guide-8;Martin’s MathJax Guide - Integrals and sums;jax;;jax;8;maths|mathjax;2016-09-17
-mathjax-guide-9;Martin’s MathJax Guide - Changing the size of elements in a formula;jax;;jax;9;maths|mathjax;2016-09-17
+mathjax-guide-1;Martin’s MathJax Guide - Introduction;jax;jax01;jax;;maths|mathjax;2016-10-29
+mathjax-guide-2;Martin’s MathJax Guide - Inline math formulas and displayed equations;jax;jax02;jax;;maths|mathjax;2016-09-17
+mathjax-guide-3;Martin’s MathJax Guide - Math symbols and math fonts;jax;jax03;jax;;maths|mathjax;2016-09-17
+mathjax-guide-4;Martin’s MathJax Guide - Notations;jax;jax04;jax;;maths|mathjax;2016-09-17
+mathjax-guide-5;Martin’s MathJax Guide - Fractions and related constructions;jax;jax05;jax;;maths|mathjax;2016-09-17
+mathjax-guide-6;Martin’s MathJax Guide - Delimiters;jax;jax06;jax;;maths|mathjax;2016-09-17
+mathjax-guide-7;Martin’s MathJax Guide - \text and \mod;jax;jax07;jax;;maths|mathjax;2016-09-17
+mathjax-guide-8;Martin’s MathJax Guide - Integrals and sums;jax;jax08;jax;;maths|mathjax;2016-09-17
+mathjax-guide-9;Martin’s MathJax Guide - Changing the size of elements in a formula;jax;jax09;jax;;maths|mathjax;2016-09-17
 parasurf-intro;Martin’s Parametric Surfaces;parasurf;intro;parasurf;cone;maths|surface|parametric|cone;2016-09-25
 parasurf-sphere;Martin’s Parametric Sphere;parasurf;sphere;parasurf;sphere;maths|surface|parametric|sphere;2016-09-25
 parasurf-torus;Martin’s Parametric Torus;parasurf;torus;parasurf;torus;maths|surface|parametric|torus;2016-09-25

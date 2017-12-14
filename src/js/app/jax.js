@@ -1,5 +1,4 @@
-import {render} from '../app'
-import {$one} from './lib'
+import {$one,$q} from './lib'
 
 function syms(elem) {
     var text = elem.innerHTML;
@@ -19,26 +18,14 @@ function syms(elem) {
     elem.innerHTML = html;
 }
 
-function $q(sel) {
-    return document.querySelectorAll(sel)
-}
-
 export default function(num) {
-    render('jax-text', 'jax/jax0' + num, function() {
-        $q('div.syms').forEach(syms);
-        $q('tex').forEach(function (elem) {
-            var html = elem.innerHTML
-            var parent = elem.parentNode
-            var new_elem = $one('<pre class="code"><code class="tex">'+html+'</code></pre>')
-            parent.replaceChild(new_elem, elem)
-        });
-
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-
-        //MathJax.Hub.Queue(function() {
-        //    hljs.tabReplace = '    ';
-        //    hljs.initHighlighting.called = false;
-        //    hljs.initHighlighting();
-        //});
+    $q('div.syms').forEach(syms);
+    $q('tex').forEach(function (elem) {
+        var html = elem.innerHTML
+        var parent = elem.parentNode
+        var new_elem = $one('<pre class="code"><code class="tex">'+html+'</code></pre>')
+        parent.replaceChild(new_elem, elem)
     });
+
+    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 }
