@@ -1,7 +1,7 @@
 import 'leaflet'
 
 import '../../css/leaflet.css'
-import '../../css/font-awesome.min.css'
+//import '../../css/fontawesome-all.min.css'
 import '../../css/leaflet-beautify-marker-icon.css'
 
 import '../lib/L.LabelTextCollision'
@@ -41,9 +41,12 @@ const IMGS = {
 //	'/img/pub/reigate-eagle-map.png',
 //];
 
-var map_url = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/dark_labels_under/{z}/{x}/{y}.png';
+//var map_url = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/dark_labels_under/{z}/{x}/{y}.png';
 //var map_url2 = 'http://nls-{s}.tileserver.com/nls/{z}/{x}/{y}.jpg';
-var map_att = '&copy; <a href="http://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attribution" target="_blank">CARTO</a>';
+//var map_url = 'https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png';
+var map_url = 'https://{s}.tile.openstreetmap.se/hydda/full/{z}/{x}/{y}.png';
+//var map_att = '&copy; <a href="http://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attribution" target="_blank">CARTO</a>';
+var map_att = 'Tiles courtesy of <a href="http://openstreetmap.se/" target="_blank">OpenStreetMap Sweden</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>';
 
 function render(renderer) {
 	DOTS.forEach(dot => {
@@ -225,6 +228,7 @@ function setup() {
 	    minZoom: 11,
 	    maxZoom: 18,
 	    //subdomains: '0123',
+	    subdomains: 'abc',
 	}).addTo(MAP);
 
 	//L.control.scale().addTo(map);
@@ -232,13 +236,31 @@ function setup() {
 	L.circle(CENTRE, {
 		radius: RADIUS,
 		fill: false,
-		color: '#AAA',
+		color: '#FF0'// '#AAA',
 	}).addTo(MAP);
 }
 
 export default function() {
-	DATA = require('../../data/pubs.csv')
+	DATA = [];
+	const index = {};
+	let data = require('../../data/pubs.csv');
+	data.forEach(pub => {
+		if (pub._id) {
+			index[pub._id] = pub;
+		}
+	});
 
-	setup()
-	render()
+	data = require('../../data/pubs.json');
+	data.features.forEach(feat => {
+		if (feat.geometry && feat.properties._id && index[feat.properties._id]) {
+			const pub = Object.assign({}, index[feat.properties._id], {lat: feat.geometry.coordinates[1], lon: feat.geometry.coordinates[0]});
+			DATA.push(pub);
+		}
+		else {
+			console.warn(feat.properties._id, feat.geometry, index[feat.properties._id])
+		}
+	});
+
+	setup();
+	render();
 }

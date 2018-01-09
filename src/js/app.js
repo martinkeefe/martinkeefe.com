@@ -2,7 +2,7 @@ import choo from 'choo'
 import html from 'choo/html'
 import raw from 'choo/html/raw'
 import Nanocomponent from 'nanocomponent'
-import {strerp} from './app/lib'
+import {strerp,$q} from './app/lib'
 
 // =============================================================================
 
@@ -15,7 +15,12 @@ class Page extends Nanocomponent {
 		if (r.fn) {
 			const f = require(`./app/${r.fn}`).default
 			this.fn = () => {
-				f.apply(window, r.args.split('|'));
+				const main = f.apply(window, r.args.split('|'));
+				if (main) {
+					const body = $q('.body')[0];
+					const last = body.children[0];
+					main.forEach(el => body.insertBefore(el, last));
+				}
 			};
 		}
 

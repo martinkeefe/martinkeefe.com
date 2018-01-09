@@ -402,3 +402,16 @@ table.gui td {
 	width: 150px;
 }
 
+/*============================================================================*/
+
+#films td {
+	padding: 0.25em;
+	vertical-align: top;
+}
+
+#films p.small {
+	margin: 0;
+	font-size: 15px;
+	line-height: 20px;
+	padding-bottom: 0.75em;
+}

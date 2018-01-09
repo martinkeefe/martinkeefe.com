@@ -51,41 +51,35 @@ define(function(require, exports, module) {
 
                     L.Canvas.prototype._updateTransform.call(this, center, zoom);
 
-                    var scale = this._map.getZoomScale(zoom, this._zoom), position = L.DomUtil
-                            .getPosition(this._container), viewHalf = this._map
-                            .getSize().multiplyBy(0.5 + this.options.padding), currentCenterPoint = this._map
-                            .project(this._center, zoom), destCenterPoint = this._map
-                            .project(center, zoom), centerOffset = destCenterPoint
-                            .subtract(currentCenterPoint),
-
-                    topLeftOffset = viewHalf.multiplyBy(-scale).add(position).add(
-                            viewHalf).subtract(centerOffset);
+                    var scale = this._map.getZoomScale(zoom, this._zoom),
+                        position = L.DomUtil.getPosition(this._container),
+                        viewHalf = this._map.getSize().multiplyBy(0.5 + this.options.padding),
+                        currentCenterPoint = this._map.project(this._center, zoom),
+                        destCenterPoint = this._map.project(center, zoom),
+                        centerOffset = destCenterPoint.subtract(currentCenterPoint),
+                        topLeftOffset = viewHalf.multiplyBy(-scale).add(position).add(viewHalf).subtract(centerOffset);
 
                     if (L.Browser.any3d) {
-                        L.DomUtil.setTransform(this._containerText, topLeftOffset,
-                                scale);
+                        L.DomUtil.setTransform(this._containerText, topLeftOffset, scale);
                     } else {
                         L.DomUtil.setPosition(this._containerText, topLeftOffset);
                     }
                 },
+
                 _initContainer : function(options) {
                     L.Canvas.prototype._initContainer.call(this);
 
                     this._containerText = document.createElement('canvas');
 
-                    L.DomEvent.on(this._containerText, 'mousemove',
-                            L.Util.throttle(this._onMouseMove, 32, this), this).on(
-                            this._containerText,
-                            'click dblclick mousedown mouseup contextmenu',
-                            this._onClick, this).on(this._containerText,
-                            'mouseout', this._handleMouseOut, this);
+                    L.DomEvent
+                        .on(this._containerText, 'mousemove', L.Util.throttle(this._onMouseMove, 32, this), this)
+                        .on(this._containerText, 'click dblclick mousedown mouseup contextmenu', this._onClick, this)
+                        .on(this._containerText, 'mouseout', this._handleMouseOut, this);
 
                     this._ctxLabel = this._containerText.getContext('2d');
 
-                    L.DomUtil
-                            .addClass(this._containerText, 'leaflet-zoom-animated');
+                    L.DomUtil.addClass(this._containerText, 'leaflet-zoom-animated');
                     this.getPane().appendChild(this._containerText);
-
                 },
 
                 _update : function() {
@@ -157,7 +151,7 @@ define(function(require, exports, module) {
                          * TODO setting for custom font
                          */
                         ctx.lineWidth = 2.0;
-                        ctx.font = "13px 'Lato'";
+                        ctx.font = "bold 13px 'Lato'";
 
                         // Collision detection
                         var textWidth = (ctx.measureText(layer.options.text).width)
@@ -181,9 +175,8 @@ define(function(require, exports, module) {
 
                         this._textList.push(bounds);
 
-                        ctx.strokeStyle = "black";
-                        ctx.strokeText(layer.options.text, p.x + offsetX, p.y
-                                + offsetY);
+                        ctx.strokeStyle = "white"; //black";
+                        ctx.strokeText(layer.options.text, p.x + offsetX, p.y + offsetY);
 
                         if (layer.options.textColor == undefined) {
                             ctx.fillStyle = "blue";
@@ -191,8 +184,7 @@ define(function(require, exports, module) {
                             ctx.fillStyle = layer.options.textColor;
                         }
 
-                        ctx.fillText(layer.options.text, p.x + offsetX, p.y
-                                + offsetY);
+                        ctx.fillText(layer.options.text, p.x + offsetX, p.y + offsetY);
                     }
                 },
 
