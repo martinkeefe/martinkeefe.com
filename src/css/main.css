@@ -404,14 +404,34 @@ table.gui td {
 
 /*============================================================================*/
 
-#films td {
+.films td {
 	padding: 0.25em;
 	vertical-align: top;
 }
 
-#films p.small {
+.films td.links {
+	font-size: 15px;
+	width: 66px;
+}
+
+.films p.small {
 	margin: 0;
 	font-size: 15px;
 	line-height: 20px;
 	padding-bottom: 0.75em;
+}
+
+.films p.small img {
+	-max-height: 16px;
+	-max-width: 48px;
+}
+
+.films dt {
+	float: left;
+	clear: left;
+	width: 50px;
+}
+.films dd {
+	margin: 0 0 0 68px;
+	padding: 0 0 0.5em 0;
 }
