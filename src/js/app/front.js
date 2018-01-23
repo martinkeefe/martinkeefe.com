@@ -1,4 +1,6 @@
-function $i(id) { return document.getElementById(id); }
+import {$i} from './lib'
+
+//function $i(id) { return document.getElementById(id); }
 //function $c(code) { return String.fromCharCode(code); }
 
 var n = 1;

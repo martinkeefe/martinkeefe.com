@@ -3,12 +3,14 @@ const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+//const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
 	entry: {
 		app: './src/js/index.js',
     	vendor: [
+    		'choo',
+    		'nanocomponent',
     		'three',
     		'three/TrackballControls',
     		'leaflet',
@@ -44,11 +46,11 @@ module.exports = {
 	plugins: [
 		new CleanWebpackPlugin(['dist']),
 		//new ExtractTextPlugin('css/app.bundle.css'),
-	    new webpack.DefinePlugin({
-	        'process.env.NODE_ENV': '"development"',
-	        'global': {} // bizarre lodash(?) webpack workaround
-	        //'global.GENTLY': false // superagent client fix
-	    }),
+	    //new webpack.DefinePlugin({
+	    //    'process.env.NODE_ENV': '"development"',
+	    //    //'global': {}, // bizarre lodash(?) webpack workaround
+	    //    //'global.GENTLY': false // superagent client fix
+	    //}),
 	    new webpack.ProvidePlugin({
             'THREE': 'three/build/three'
         }),
@@ -68,9 +70,7 @@ module.exports = {
     devtool: 'source-map'
 }
 
-
 // https://github.com/webpack/extract-text-webpack-plugin/blob/webpack-1/README.md
 // https://webpack.github.io/docs/tutorials/getting-started/
 // https://shellmonger.com/2016/01/19/adding-sass-support-to-webpack/
-
 // https://knooto.info/webpack-threejs/

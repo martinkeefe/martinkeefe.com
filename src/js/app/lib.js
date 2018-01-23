@@ -1,13 +1,13 @@
 // http://javascript.crockford.com/remedial.html - supplant(object)
-//export function strerp(str, obj) {
-//	return str.replace(
-//		/\{\{([^{}]*)\}\}/g,
-//		function (a, b) {
-//			var r = obj[b];
-//			return typeof r === 'string' || typeof r === 'number' ? r : a;
-//		}
-//	);
-//};
+export function strerp(str, obj) {
+	return str.replace(
+		/\{\{([^{}]*)\}\}/g,
+		function (a, b) {
+			var r = obj[b];
+			return typeof r === 'string' || typeof r === 'number' ? r : a;
+		}
+	);
+};
 
 // https://developers.google.com/web/fundamentals/getting-started/primers/promises#promisifying_xmlhttprequest
 //export function get(url) {
@@ -66,10 +66,10 @@
 //};
 
 
-export function title(ttl) {
-	var ttl_el = document.getElementsByTagName('title')[0];
-	ttl_el.innerHTML = ttl;
-}
+//export function title(ttl) {
+//	var ttl_el = document.getElementsByTagName('title')[0];
+//	ttl_el.innerHTML = ttl;
+//}
 
 
 
@@ -140,5 +140,9 @@ export function $i(id) { return document.getElementById(id); }
 export function $one(str) {
 	// https://davidwalsh.name/convert-html-stings-dom-nodes
 	return document.createRange().createContextualFragment(str).firstChild
+}
+
+export function $q(sel) {
+    return document.querySelectorAll(sel)
 }
 

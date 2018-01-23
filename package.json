@@ -11,7 +11,9 @@
   },
   "author": "Martin Keefe",
   "dependencies": {
+    "choo": "^6.6.0",
     "leaflet": "^1.2.0",
+    "nanocomponent": "^6.4.6",
     "three": "^0.88.0"
   },
   "devDependencies": {

@@ -1,98 +1,86 @@
-import {title} from './app/lib'
+import choo from 'choo'
+import html from 'choo/html'
+import raw from 'choo/html/raw'
+import Nanocomponent from 'nanocomponent'
+import {strerp,$q} from './app/lib'
 
 // =============================================================================
-// Derived from https://github.com/miazukee/restlite
 
-var routes = [];
-var error404 = '#404';
+class Page extends Nanocomponent {
+	constructor() {
+		super()
+	}
 
-function route() {
-	//var r = window.location.hash.substr(1).split('?');
-	var r = window.location.pathname.substr(1);
-	//var a = r[1];
-	//r = r[0];
-	if(routes[r] !== undefined)
-		routes[r](); //a);
-	else if(routes[error404] !== undefined)
-		routes[error404](); //a);
-}
-
-function navto(r) {
-	console.log('NAVTO', r);
-	history.pushState({}, '', r);
-	route();
-}
-
-export function render(id, path, success) {
-	if (path) {
-		var el = document.getElementById(id);
-		el.innerHTML = require('../html/' + path + '.html')
-		if (success) {
-			success();
+	createElement(r) {
+		if (r.fn) {
+			const f = require(`./app/${r.fn}`).default
+			this.fn = () => {
+				const main = f.apply(window, r.args.split('|'));
+				if (main) {
+					const body = $q('.body')[0];
+					const last = body.children[0];
+					main.forEach(el => body.insertBefore(el, last));
+				}
+			};
 		}
 
-		var host = window.location.href.split('/')[2];
-		for (var i = 0; i < document.links.length; i++) {
-			var link = document.links[i];
-			if (link.href) {
-				var href = link.href.split('/');
-				//console.log(href)
-				if (href[2] === host && !href[3].endsWith('#')) {
-					(function(dst) {
-						link.onclick = e => {
-							e.preventDefault();
-							e.stopPropagation();
-							navto(dst);
-						};
-					})('/' + href.slice(3).join('/'));
-				}
+		let outer = html``;
+		if (r.outer) {
+			outer = require('../html/' + r.outer + '.html')
+
+			if (r.inner) {
+				const inner = require('../html/' + r.outer + '/' + r.inner + '.html')
+				outer = strerp(outer, {inner})
 			}
+
+			if (r.date) {
+				const foot = `<div class="update">Last update: ${r.date}</div>`;
+				outer = strerp(outer, {foot})
+			}
+
+			outer = html`<div id="content">${raw(outer)}</div>`
+		}
+		return outer
+	}
+
+	load() {
+		if (this.fn) {
+			this.fn()
 		}
 	}
 }
 
-//window.addEventListener('hashchange', function() {
-window.addEventListener('popstate', e => {
-	console.log('POPSTATE');
-	route();
+//------------------------------------------------------------------------------
+
+const app = choo()
+
+let HOME;
+const MNM = {};
+
+require('../data/index.csv').forEach(r => {
+	const page = new Page();
+	const view = (state, emit) => {
+		emit('DOMTitleChange', r.ttl);
+		return page.render(r);
+	};
+	app.route('/'+r.route, view);
+
+	if (r.route === '') {
+		HOME = view;
+	}
+	if (r.route.startsWith('mnm-')) {
+		const mnm = r.route.split('-')[1];
+		MNM[mnm] = view;
+	}
 });
 
+// Redirect old MNM pages
+app.route('/music/:mnm', (state, emit) => {
+	const mnm = state.params.mnm.substr(3);
+	return MNM[mnm](state, emit);
+})
 
-export function start() {
-	console.log('START');
+// Redirect unknown pages
+app.route('*', HOME)
 
-	// cols: 'route','ttl','outer','inner','fn','args','tags','date'
-	const data = require('../data/index.csv')
-
-	data.forEach(r => {
-		routes[r.route] = function() {
-			title(r.ttl);
-			var done = null;
-			if (r.fn) {
-				const fn = require(`./app/${r.fn}`).default
-				done = () => fn.apply(window, r.args.split('|'));
-			}
-			render('content', r.outer, () => {
-				if (r.date) {
-					var els = document.getElementsByClassName('body');
-					if (els.length > 0) {
-						els[0].insertAdjacentHTML('beforeend', '<div class="update">Last update: '+r.date+'</div>');
-					}
-				}
-				if (r.inner) {
-					render('body', r.outer + '/' + r.inner, done);
-				} else if (done) {
-					done();
-				}
-			});
-		};
-	});
-	// Redirect old MNM pages
-	['08','09','11','14','15','18','22','23','25','27','29','31','33','34'].forEach(mnm => {
-		routes['music/mnm'+mnm] = routes['mnm-'+mnm];
-	})
-	route();
-}
-
-// =============================================================================
-
+app.mount('#content');
