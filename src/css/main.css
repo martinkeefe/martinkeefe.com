@@ -114,7 +114,8 @@ nav.side ul ul {
 }
 
 nav.side ul li {
-  margin-bottom: 0.5em;
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
   line-height: 1.25em;
   margin-left: 6px;
   text-indent: -9px;
@@ -203,40 +204,40 @@ div.update span {
 
 /*============================================================================*/
 
-#playlist {
+.playlist {
 	-display: flex;
 	-flex-wrap: wrap;
 	margin: -1em 0 1em -1em; /* gutter */
 }
 
-#playlist .item {
+.playlist .item {
 	-width: 50%;
 	padding: 1em 0 0 1em; /* gutter */
 	display: flex;
 	position: relative;
 }
 
-#playlist .item p {
+.playlist .item p {
 	margin: 0;
 }
-#playlist .item img {
+.playlist .item img {
 	width: 128px;
 	height: 128px;
 	flex: 1;
 }
-#playlist .item .data {
+.playlist .item .data {
 	flex: 2;
 	padding-left: 0.5em;
 }
-#playlist .item .data p {
+.playlist .item .data p {
 	text-align: left;
 }
 
-#playlist .item.active .data {
+.playlist .item.active .data {
 	background: blue;
 }
 
-#playlist audio {
+.playlist audio {
 	width: 100%;
 	position: absolute;
 	left: 0;
@@ -245,12 +246,12 @@ div.update span {
 }
 
 @media only screen and (min-width: 43em) {
-	#playlist {
+	.playlist {
 		display: flex;
 		flex-wrap: wrap;
 	}
 
-	#playlist .item {
+	.playlist .item {
 		width: 50%;
 	}
 }

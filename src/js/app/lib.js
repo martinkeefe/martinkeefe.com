@@ -1,3 +1,5 @@
+import html from 'choo/html'
+
 // http://javascript.crockford.com/remedial.html - supplant(object)
 export function strerp(str, obj) {
 	return str.replace(
@@ -8,6 +10,60 @@ export function strerp(str, obj) {
 		}
 	);
 };
+
+export function default_page(side,body,date) {
+    const nav = html`<nav class="side">
+                    <a href="/"><img src="${require('../../img/martian.png')}"></a>
+                </nav>`
+
+	let main = html`<div class="body"></div>`
+
+    if (Array.isArray(side)) {
+	    side.forEach(s => nav.appendChild(s))
+	}
+	else {
+		nav.appendChild(side)
+	}
+
+	if (Array.isArray(body)) {
+		body.forEach(b => main.appendChild(b))
+	}
+	else {
+		main = body
+	}
+    main.appendChild(html`<div class="update">Last update: ${date}</div>`)
+
+    return html`
+        <div id="content">
+            ${nav}
+            ${main}
+        </div>`
+}
+
+export function make_nav(here,tree) {
+    const ul = html`<ul></ul>`
+
+    tree.forEach(t => {
+        let li
+    	if (t.length == 2) {
+	        const [href,text] = t
+	        if (!href || href === here) {
+	            li = html`<li>${text}</li>`
+	        }
+	        else {
+	            li = html`<li><a href="${href}">${text}</a></li>`
+	        }
+	    }
+	    else if (t.length == 3) {
+	        const [_,text,list] = t
+            li = html`<li>${text}:${list}</li>`
+	    }
+        ul.appendChild(li)
+    })
+
+    return ul
+}
+
 
 // https://developers.google.com/web/fundamentals/getting-started/primers/promises#promisifying_xmlhttprequest
 //export function get(url) {

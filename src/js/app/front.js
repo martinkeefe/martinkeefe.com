@@ -1,4 +1,6 @@
-import {$i} from './lib'
+import html from 'choo/html'
+import Nanocomponent from 'nanocomponent'
+import {default_page,make_nav} from './lib'
 
 //function $i(id) { return document.getElementById(id); }
 //function $c(code) { return String.fromCharCode(code); }
@@ -28,43 +30,6 @@ var pause = false;
 var fps = 10;
 
 document.onkeypress = key_manager;
-
-function init()
-{
-    var screen=$i('screen');
-    var shadebob=$i('shadebob');
-    shadebob.width=canvas_w;
-    shadebob.height=canvas_h;
-    context=shadebob.getContext('2d');
-    reset();
-
-    shadebob.addEventListener('click', reset);
-}
-
-function reset()
-{
-    context.fillStyle='rgb(54,50,65)';
-    context.fillRect(0,0,canvas_w,canvas_h);
-
-    clearTimeout(timeout);
-
-    a = Math.random(0,1)*angle;
-    b = Math.random(0,1)*angle;
-    r = 0;
-    fade = 32;
-
-    for (var i=0; i<6; i++) {
-        c[i] = Math.random(0,1) / 2;
-        d[i] = Math.random(0,1) / 2;
-    }
-    radius = Math.round((canvas_w+canvas_h)/4.5);
-    e = radius * 0.2; /* 0.15 */
-    p_x = Math.round(canvas_w/2);
-    p_y = Math.round(canvas_h/2);
-    x = (radius*c[0])*Math.cos(a*d[1])+(radius*c[2])*Math.sin(a*d[3])+(radius*c[4])*Math.sin(a*d[5]);
-    y = (radius*c[5])*Math.sin(a*d[4])+(radius*c[3])*Math.cos(a*d[2])+(radius*c[1])*Math.cos(a*d[0]);
-    anim();
-}
 
 function anim()
 {
@@ -171,15 +136,84 @@ function draw_dot(x,y)
     context.closePath();
 }
 
-export default function resize()
-{
-    var el = $i('screen');
-    canvas_w = el.clientWidth; //get_screen_size()[0];
-    canvas_h = canvas_w; //get_screen_size()[1];
-    init();
-}
-
 function key_manager(evt)
 {
     reset();
+}
+
+function reset()
+{
+    context.fillStyle='rgb(54,50,65)';
+    context.fillRect(0,0,canvas_w,canvas_h);
+
+    clearTimeout(timeout);
+
+    a = Math.random(0,1)*angle;
+    b = Math.random(0,1)*angle;
+    r = 0;
+    fade = 32;
+
+    for (var i=0; i<6; i++) {
+        c[i] = Math.random(0,1) / 2;
+        d[i] = Math.random(0,1) / 2;
+    }
+    radius = Math.round((canvas_w+canvas_h)/4.5);
+    e = radius * 0.2; /* 0.15 */
+    p_x = Math.round(canvas_w/2);
+    p_y = Math.round(canvas_h/2);
+    x = (radius*c[0])*Math.cos(a*d[1])+(radius*c[2])*Math.sin(a*d[3])+(radius*c[4])*Math.sin(a*d[5]);
+    y = (radius*c[5])*Math.sin(a*d[4])+(radius*c[3])*Math.cos(a*d[2])+(radius*c[1])*Math.cos(a*d[0]);
+    anim();
+}
+
+
+
+class FrontPage extends Nanocomponent {
+  constructor() {
+      super()
+  }
+
+  createElement() {
+    this.canvas = html`<canvas onclick=${reset}></canvas>`
+    this.screen = html`
+        <div class="body" id="front">
+            ${this.canvas}
+            <p style="text-align: center;">Tap or hit any key for a new pattern.</p>
+        </div>`
+
+    return default_page(
+        [
+            make_nav('/', [
+                ['/mnm-09',      "Monday Night Martin"],
+                ['/maths-links', "Maths"],
+                ['/pub-watch',   "Pub Watch"],
+                ['/film-2018',   "Film Picks"],
+            ]),
+            html`<hr>`,
+            html`<p style="font-size: 14px; text-align: justify;">Techie Note: This site is a simple static single page app hosted on Amazon S3.
+                If you’re curious you can browse the source code on <a href="https://github.com/martinkeefe/martinkeefe.com-webpack">GitHub</a>.</p>`,
+        ],
+        this.screen,
+        '2018-01-23')
+  }
+
+  //update() {
+  //  return false
+  //}
+
+  load() {
+    canvas_w = this.screen.clientWidth; //get_screen_size()[0];
+    canvas_h = canvas_w; //get_screen_size()[1];
+    this.canvas.width = canvas_w
+    this.canvas.height = canvas_h
+    context = this.canvas.getContext('2d')
+    reset()
+  }
+}
+
+
+export default function(state, emit) {
+    const page = new FrontPage()
+    emit('DOMTitleChange', "Martin’s Stuff")
+    return page.render()
 }
