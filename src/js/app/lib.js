@@ -1,4 +1,5 @@
-import html from 'choo/html'
+import {h,render} from 'preact'
+//import html from 'choo/html'
 
 // http://javascript.crockford.com/remedial.html - supplant(object)
 export function strerp(str, obj) {
@@ -12,56 +13,58 @@ export function strerp(str, obj) {
 };
 
 export function default_page(side,body,date) {
-    const nav = html`<nav class="side">
-                    <a href="/"><img src="${require('../../img/martian.png')}"></a>
-                </nav>`
+    //const navs = []
 
-	let main = html`<div class="body"></div>`
+	//let main =
 
-    if (Array.isArray(side)) {
-	    side.forEach(s => nav.appendChild(s))
-	}
-	else {
-		nav.appendChild(side)
-	}
+    //if (Array.isArray(side)) {
+	//    side.forEach(s => navs.push(s))
+	//}
+	//else {
+	//	navs.push(side)
+	//}
 
-	if (Array.isArray(body)) {
-		body.forEach(b => main.appendChild(b))
-	}
-	else {
-		main = body
-	}
-    main.appendChild(html`<div class="update">Last update: ${date}</div>`)
+	//if (Array.isArray(body)) {
+	//	body.forEach(b => main.appendChild(b))
+	//}
+	//else {
+	//	main = body
+	//}
+    //main.appendChild()
 
-    return html`
+    return
         <div id="content">
-            ${nav}
-            ${main}
-        </div>`
+            <nav class="side">
+            	<a href="/"><img src={require('../../img/martian.png')}/></a>
+            	{side}
+            </nav>
+            <div class="body">{body}</div>
+            <div class="update">Last update: {date}</div>
+        </div>
 }
 
 export function make_nav(here,tree) {
-    const ul = html`<ul></ul>`
+    const lis = []
 
     tree.forEach(t => {
         let li
     	if (t.length == 2) {
 	        const [href,text] = t
 	        if (!href || href === here) {
-	            li = html`<li>${text}</li>`
+	            li = <li>{text}</li>
 	        }
 	        else {
-	            li = html`<li><a href="${href}">${text}</a></li>`
+	            li = <li><a href={href}>{text}</a></li>
 	        }
 	    }
 	    else if (t.length == 3) {
 	        const [_,text,list] = t
-            li = html`<li>${text}:${list}</li>`
+            li = <li>{text}:{list}</li>
 	    }
-        ul.appendChild(li)
+        lis.push(li)
     })
 
-    return ul
+    return <ul>{lis}</ul>
 }
 
 

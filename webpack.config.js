@@ -9,8 +9,11 @@ module.exports = {
 	entry: {
 		app: './src/js/index.js',
     	vendor: [
-    		'choo',
-    		'nanocomponent',
+    		//'choo',
+    		//'nanocomponent',
+    		'preact',
+    		'react-router-dom',
+    		'preact-compat',
     		'three',
     		'three/TrackballControls',
     		'leaflet',
@@ -30,12 +33,14 @@ module.exports = {
             'three/TrackballControls': path.join(__dirname, 'node_modules/three/examples/js/controls/TrackballControls.js'),
             //'three/DragControls': path.join(__dirname, 'node_modules/three/examples/js/controls/DragControls.js'),
             //'three/OrbitControls': path.join(__dirname, 'node_modules/three/examples/js/controls/OrbitControls.js'),
+            'react': 'preact-compat',
+            //'react-dom': 'preact-compat',
         }
 	},
 	module: {
 		rules: [
 			//{test: /\.(css|sass|scss)$/, loader: ExtractTextPlugin.extract('style', 'css?sourceMap!sass?sourceMap')},
-			{test: /\.(js)$/, exclude: /node_modules/, use: ['babel-loader']},
+			{test: /\.(js|jsx)$/, exclude: /node_modules/, use: ['babel-loader']},
        		{test: /\.css$/, use: ['style-loader', 'css-loader']},
        		{test: /\.(png|svg|jpg|gif)$/, use: ['file-loader']},
        		{test: /\.(woff|woff2|eot|ttf|otf)$/, use: ['file-loader']},

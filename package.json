@@ -11,14 +11,16 @@
   },
   "author": "Martin Keefe",
   "dependencies": {
-    "choo": "^6.6.0",
     "leaflet": "^1.2.0",
-    "nanocomponent": "^6.4.6",
+    "preact": "^8.2.7",
+    "preact-compat": "^3.18.0",
+    "react-router-dom": "^4.2.2",
     "three": "^0.88.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-loader": "^7.1.2",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.6.1",
     "clean-webpack-plugin": "^0.1.17",
     "css-loader": "^0.28.7",

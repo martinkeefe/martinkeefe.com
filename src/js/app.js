@@ -1,12 +1,17 @@
-import choo from 'choo'
-import html from 'choo/html'
+//import choo from 'choo'
+//import html from 'choo/html'
 //import raw from 'choo/html/raw'
 //import Nanocomponent from 'nanocomponent'
-//import {strerp,$q} from './app/lib'
+import {h, render, Component} from 'preact'
+//import Router from 'preact-router'
+//import Match from 'preact-router/match'
+//import { Link } from 'preact-router/match';
+import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
 
-import front from './app/front'
-import mnm from './app/mnm'
-import film from './app/film'
+import ShadeBob from './app/front'
+//import {$i} from './app/lib'
+//import mnm from './app/mnm'
+//import film from './app/film'
 
 
 // =============================================================================
@@ -57,7 +62,7 @@ import film from './app/film'
 
 //------------------------------------------------------------------------------
 
-const app = choo()
+//const app = choo()
 
 //let HOME = front;
 //const MNM = {};
@@ -79,12 +84,31 @@ const app = choo()
 //	}
 //});
 
-app.route('/', front)
+//app.route('/', front)
 
-mnm(app)
-film(app)
+//mnm(app)
+//film(app)
 
 // Redirect unknown pages
-app.route('*', front)
+//app.route('*', front)
 
-app.mount('#content');
+//app.mount('#content');
+
+const Techie = () => (
+	<div>
+		<hr/>
+    	<p style="font-size: 14px; text-align: justify;">Techie Note: This site is a simple static single page app hosted on Amazon S3.
+    	  If you’re curious you can browse the source code on <a href="https://github.com/martinkeefe/martinkeefe.com-webpack">GitHub</a>.</p>
+    </div>)
+
+render((
+	<Router>
+    	<div id="content">
+	        <nav class="side">
+	        	<Link to="/"><img src={require('../img/martian.png')}/></Link>
+	        	<Route path="/" component={Techie}/>
+	        </nav>
+        	<Route path="/" component={ShadeBob}/>
+    	</div>
+	</Router>
+), document.body) //$i('content'))
