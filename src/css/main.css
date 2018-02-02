@@ -37,6 +37,14 @@ a:hover, span.link:hover {
   color: #FFF;
 }
 
+a.active, a.active:visited, span.link {
+	color: #BBB;
+	text-decoration: none;
+}
+a.active:hover, span.link:hover {
+  text-decoration: none;
+  color: #BBB;
+}
 
 /*============================================================================*/
 

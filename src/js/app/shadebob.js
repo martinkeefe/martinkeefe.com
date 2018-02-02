@@ -1,10 +1,36 @@
-import {h, render, Component} from 'preact'
-//import html from 'choo/html'
-//import Nanocomponent from 'nanocomponent'
-//import {default_page,make_nav} from './lib'
-import {$q} from './lib'
-//function $i(id) { return document.getElementById(id); }
-//function $c(code) { return String.fromCharCode(code); }
+import React from 'react'
+
+
+export default class ShadeBob extends React.Component {
+    constructor (props) {
+        super(props)
+        this.screen = null
+        this.canvas = null
+    }
+
+    render() {
+        return (
+            <div className="body" ref={ref => this.screen = ref}>
+                <canvas onClick={reset} ref={ref => this.canvas = ref}></canvas>
+                <p style={{textAlign: 'center'}}>Tap or hit any key for a new pattern.</p>
+                <div className="update">Last update: 2018-01-30</div>
+            </div>
+        )
+    }
+
+    componentDidMount() {
+        if (this.screen && this.canvas) {
+            canvas_w = this.screen.clientWidth
+            canvas_h = canvas_w
+            this.canvas.width = canvas_w
+            this.canvas.height = canvas_h
+            context = this.canvas.getContext('2d')
+            reset()
+        }
+    }
+}
+
+// =============================================================================
 
 var n = 1;
 var canvas_x = 0;
@@ -166,73 +192,3 @@ function reset()
     y = (radius*c[5])*Math.sin(a*d[4])+(radius*c[3])*Math.cos(a*d[2])+(radius*c[1])*Math.cos(a*d[0]);
     anim();
 }
-
-
-
-export default class ShadeBob extends Component {
-    constructor (props) {
-        super(props)
-        this.screen = null
-        this.canvas = null
-    }
-
-    render() {
-        console.log('render')
-        return (
-            <div class="body" ref={ref => this.screen = ref}>
-                <canvas onClick={reset} ref={ref => this.canvas = ref}></canvas>
-                <p style="text-align: center;">Tap or hit any key for a new pattern.</p>
-                <div class="update">Last update: 2018-01-30</div>
-            </div>
-        )
-    }
-
-
-//    this.canvas = html`<canvas onclick=${reset}></canvas>`
-//    this.screen = html`
-//        <div class="body" id="front">
-//            ${this.canvas}
-//            <p style="text-align: center;">Tap or hit any key for a new pattern.</p>
-//        </div>`
-//
-//    return default_page(
-//        [
-//            make_nav('/', [
-//                ['/mnm-09',      "Monday Night Martin"],
-//                ['/maths-links', "Maths"],
-//                ['/pub-watch',   "Pub Watch"],
-//                ['/film-2018',   "Film Picks"],
-//            ]),
-//            html`<hr>`,
-//            html`<p style="font-size: 14px; text-align: justify;">Techie Note: This site is a simple static single page app hosted on Amazon S3.
-//                If you’re curious you can browse the source code on <a href="https://github.com/martinkeefe/martinkeefe.com-webpack">GitHub</a>.</p>`,
-//        ],
-//        this.screen,
-//        '2018-01-23')
-//  }
-
-  //update() {
-  //  return false
-  //}
-
-    componentDidMount() {
-        console.log('did mount')
-        //const screen = $q('.shadebob')[0]
-        //const canvas = $q('.shadebob canvas')[0]
-        if (this.screen && this.canvas) {
-            canvas_w = this.screen.clientWidth; //get_screen_size()[0];
-            canvas_h = canvas_w; //get_screen_size()[1];
-            this.canvas.width = canvas_w
-            this.canvas.height = canvas_h
-            context = this.canvas.getContext('2d')
-            reset()
-        }
-    }
-}
-
-
-//export default function(state, emit) {
-//    const page = new FrontPage()
-//    emit('DOMTitleChange', "Martin’s Stuff")
-//    return page.render()
-//}

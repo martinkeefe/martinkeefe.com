@@ -1,15 +1,74 @@
+import React, {Fragment} from 'react'
+import {render} from 'react-dom'
+import {BrowserRouter as Router, Route, Link, NavLink, Switch} from 'react-router-dom'
+
+import {$i} from './app/lib'
+import ShadeBob from './app/shadebob'
+
+
+
+const Techie = () => (
+		<Fragment>
+			<hr/>
+			<p style={{fontSize: 14+'px', textAlign: 'justify'}}>Techie Note: This site is a simple static single page app hosted on Amazon S3.
+			  If you’re curious you can browse the source code on <a href="https://github.com/martinkeefe/martinkeefe.com-webpack">GitHub</a>.</p>
+		</Fragment>
+	)
+
+const Martian = () => <img src={require('../img/martian.png')}/>
+const MartianLink = () => <Link to="/"><Martian/></Link>
+
+const MathNav = () => (
+    	<ul>
+			<li><NavLink to="/parasurf-intro">Parametric Surfaces</NavLink></li>
+			<li><NavLink to="/mathjax-guide-1">MathJax Guide</NavLink></li>
+			<li><NavLink to="/tiling-gloss">Tiling Glossary</NavLink></li>
+		</ul>
+	)
+
+const Nav = () => (
+		<ul>
+            <li><NavLink to="/mnm-09">Monday Night Martin</NavLink></li>
+            <li>
+            	<NavLink to="/maths-links">Maths</NavLink>
+	        	<Route path="/maths-links" component={MathNav}/>
+	        	<Route path="/tiling-gloss" component={MathNav}/>
+            </li>
+            <li><NavLink to="/pub-watch">Pub Watch</NavLink></li>
+            <li><NavLink to="/film-2018">Film Picks</NavLink></li>
+		</ul>
+	)
+
+render((
+	<Router>
+    	<Fragment>
+	        <nav className="side">
+	        	<Switch>
+	        		<Route exact path="/" component={Martian}/>
+	        		<Route path="*" component={MartianLink}/>
+	        	</Switch>
+	        	<Nav/>
+	        	<Route exact path="/" component={Techie}/>
+	        </nav>
+        	<Route exact path="/" component={ShadeBob}/>
+    	</Fragment>
+	</Router>
+), $i('content'))
+
+
+
+
+// =============================================================================
+
 //import choo from 'choo'
 //import html from 'choo/html'
 //import raw from 'choo/html/raw'
 //import Nanocomponent from 'nanocomponent'
-import {h, render, Component} from 'preact'
+//import {h, render, Component} from 'preact'
 //import Router from 'preact-router'
 //import Match from 'preact-router/match'
 //import { Link } from 'preact-router/match';
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
 
-import ShadeBob from './app/front'
-//import {$i} from './app/lib'
 //import mnm from './app/mnm'
 //import film from './app/film'
 
@@ -94,21 +153,3 @@ import ShadeBob from './app/front'
 
 //app.mount('#content');
 
-const Techie = () => (
-	<div>
-		<hr/>
-    	<p style="font-size: 14px; text-align: justify;">Techie Note: This site is a simple static single page app hosted on Amazon S3.
-    	  If you’re curious you can browse the source code on <a href="https://github.com/martinkeefe/martinkeefe.com-webpack">GitHub</a>.</p>
-    </div>)
-
-render((
-	<Router>
-    	<div id="content">
-	        <nav class="side">
-	        	<Link to="/"><img src={require('../img/martian.png')}/></Link>
-	        	<Route path="/" component={Techie}/>
-	        </nav>
-        	<Route path="/" component={ShadeBob}/>
-    	</div>
-	</Router>
-), document.body) //$i('content'))

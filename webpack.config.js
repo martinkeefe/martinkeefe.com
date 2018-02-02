@@ -11,16 +11,16 @@ module.exports = {
     	vendor: [
     		//'choo',
     		//'nanocomponent',
-    		'preact',
+    		'react',
+    		'react-dom',
     		'react-router-dom',
-    		'preact-compat',
-    		'three',
-    		'three/TrackballControls',
-    		'leaflet',
-    		'./src/js/lib/L.LabelTextCollision',
+    		//'three',
+    		//'three/TrackballControls',
+    		//'leaflet',
+    		//'./src/js/lib/L.LabelTextCollision',
     		//'./src/js/lib/L.OSGraticule',
-    		'./src/js/lib/leaflet-beautify-marker-icon',
-    		'./src/js/lib/xgui',
+    		//'./src/js/lib/leaflet-beautify-marker-icon',
+    		//'./src/js/lib/xgui',
     	],
 	},
 	output: {
@@ -30,11 +30,9 @@ module.exports = {
 	resolve: {
 		extensions: ['.js'],
 		alias: {
-            'three/TrackballControls': path.join(__dirname, 'node_modules/three/examples/js/controls/TrackballControls.js'),
+            //'three/TrackballControls': path.join(__dirname, 'node_modules/three/examples/js/controls/TrackballControls.js'),
             //'three/DragControls': path.join(__dirname, 'node_modules/three/examples/js/controls/DragControls.js'),
             //'three/OrbitControls': path.join(__dirname, 'node_modules/three/examples/js/controls/OrbitControls.js'),
-            'react': 'preact-compat',
-            //'react-dom': 'preact-compat',
         }
 	},
 	module: {

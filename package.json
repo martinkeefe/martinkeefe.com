@@ -12,8 +12,8 @@
   "author": "Martin Keefe",
   "dependencies": {
     "leaflet": "^1.2.0",
-    "preact": "^8.2.7",
-    "preact-compat": "^3.18.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
     "react-router-dom": "^4.2.2",
     "three": "^0.88.0"
   },
