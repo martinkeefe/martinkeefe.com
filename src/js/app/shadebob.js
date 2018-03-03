@@ -1,26 +1,24 @@
-import React from 'react'
+import React, {Fragment} from 'react'
 
 
 export default class ShadeBob extends React.Component {
     constructor (props) {
         super(props)
-        this.screen = null
         this.canvas = null
     }
 
     render() {
         return (
-            <div className="body" ref={ref => this.screen = ref}>
-                <canvas onClick={reset} ref={ref => this.canvas = ref}></canvas>
+            <Fragment>
+                <canvas style={{width:'100%'}} onClick={reset} ref={ref => this.canvas = ref}></canvas>
                 <p style={{textAlign: 'center'}}>Tap or hit any key for a new pattern.</p>
-                <div className="update">Last update: 2018-01-30</div>
-            </div>
+            </Fragment>
         )
     }
 
     componentDidMount() {
-        if (this.screen && this.canvas) {
-            canvas_w = this.screen.clientWidth
+        if (this.canvas) {
+            canvas_w = this.canvas.clientWidth
             canvas_h = canvas_w
             this.canvas.width = canvas_w
             this.canvas.height = canvas_h

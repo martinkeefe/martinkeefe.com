@@ -1,6 +1,6 @@
-import html from 'choo/html'
-import raw from 'choo/html/raw'
-import {default_page,make_nav} from './lib'
+import React, {Fragment} from 'react'
+import {NormalPage, make_nav} from '../app'
+
 import FILMS from '../../data/films'
 
 const MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -25,121 +25,133 @@ const COLOR = {
 }
 
 function rate(seen) {
-    return html`
+    return (
         <svg width="14" height="19">
-            <rect width="14" height="14" style="fill:${COLOR[seen]}" />
-        </svg>`
+            <rect width="14" height="14" style={{fill:COLOR[seen]}}/>
+        </svg>
+    )
+}
+
+function SP(key) {
+    return <Fragment key={key}> </Fragment>
 }
 
 function make_film_picks(year)
 {
-    const tbl = html`<table class="films"></table>`;
+    const tbl = [];
 
     FILMS.forEach(film => {
         const date = film.date.split('-');
 
         if (date.length == 3 && date[0] === year) {
-            const poster = film.poster ? html`<img src="${film.poster}" width="96">` : '';
+            const poster = film.poster ? <img src={film.poster} width="96"/> : null;
 
             const links = [];
-            //if (film.link) {
-            //  links.push(`<a href="${film.link}"><i class="fab fa-wikipedia-w"></i></a>`);
-            //}
             if (film.imdb) {
-                //links.push(`<a href="http://www.imdb.com/title/${film.imdb}/"><i class="fab fa-imdb"></i></a>`);
-                links.push(`<a href="http://www.imdb.com/title/${film.imdb}/"><img src="${IMG.imdb}" height="16"></a>`);
+                links.push(<a key="imdb" href={'http://www.imdb.com/title/'+film.imdb}><img src={IMG.imdb} height="16"/></a>);
+                links.push(SP("imdb_"))
             }
             if (film.youtube) {
-                //links.push(`<a href="${film.trailer}"><i class="fab fa-youtube"></i></a>`);
-                links.push(`<a href="https://www.youtube.com/watch?v=${film.youtube}"><img src="${IMG.youtube}" height="16"></a>`);
+                links.push(<a key="youtube" href={'https://www.youtube.com/watch?v='+film.youtube}><img src={IMG.youtube} height="16"/></a>);
+                links.push(SP("youtube_"))
             }
             if (film.tomato) {
-                //const rt = film.tomato.split('|');
-                links.push(`<a href="https://www.rottentomatoes.com/m/${film.tomato}"><img src="${IMG.tomato}" height="16"></a>`);
+                links.push(<a key="tomato" href={'https://www.rottentomatoes.com/m/'+film.tomato}><img src={IMG.tomato} height="16"/></a>);
+                links.push(SP("tomato_"))
             }
             if (film.zooqle) {
-                links.push(`<a href="https://zooqle.com/movie/${film.zooqle}.html"><img src="${IMG.zooqle}" height="18"></a>`);
+                links.push(<a key="zooqle" href={'https://zooqle.com/movie/'+film.zooqle+'.html'}><img src={IMG.zooqle} height="18"/></a>);
+                links.push(SP("zooqle_"))
             }
             if (film.netflix) {
-                links.push(`<a href="http://unogs.com/video/?v=${film.netflix}"><img src="${IMG.netflix}" width="46"></a>`);
+                links.push(<a key="netflix" href={'http://unogs.com/video/?v='+film.netflix}><img src={IMG.netflix} width="46"/></a>);
+                links.push(SP("netflix_"))
             }
             //if (film.paradiso) {
             //    links.push(`<a href="https://www.cinemaparadiso.co.uk/rentals/${film.paradiso}.html"><img src="${IMG.paradiso}" width="46"></a>`);
             //}
 
-            let title = html`<a href="${film.link}"><i>${film.title}</i></a>`;
+            let title = <a href={film.link}><i>{film.title}</i></a>;
 
             if (film.lang) {
                 if (film.lang === 'jp') {
-                    title = html`<td>${title} <img style="vertical-align: baseline;padding-left:5px" src="${IMG.jp}" height="13"> ${film[film.lang+'_title'] || ''}</td>`;
+                    title = <td>{title} <img style={{verticalAlign: 'baseline', paddingLeft: '5px'}} src={IMG.jp} height="13"/> {film[film.lang+'_title'] || ''}</td>;
                 }
                 else {
-                    title = html`<td>${title} <img style="vertical-align: baseline;padding-left:5px" src="${IMG[film.lang]}" height="13"> <i>${film[film.lang+'_title'] || ''}</i></td>`;
+                    title = <td>{title} <img style={{verticalAlign: 'baseline', paddingLeft: '5px'}} src={IMG[film.lang]} height="13"/> <i>{film[film.lang+'_title'] || ''}</i></td>;
                 }
             }
             else {
-                title = html`<td>${title}</td>`;
+                title = <td>{title}</td>;
             }
 
-            const seen = film.seen ? rate(film.seen) : '';
-            const note = film.note ? html`<p class="small"><i>${film.note}</i></p>` : '';
+            const seen = film.seen ? rate(film.seen) : null;
+            const note = film.note ? <p className="small" dangerouslySetInnerHTML={{__html: `<i>${film.note}</i>`}}></p> : null;
 
-            tbl.appendChild(html`
-                <tr>
-                    <td nowrap>${MONTH[Number(date[1])-1]} ${Number(date[2])}</td>
-                    <td rowspan="2">${poster}</td>
-                    ${title}
-                    <td nowrap style="text-align: right">${film.series} ${seen}</td>
-                </tr>`);
-            tbl.appendChild(html`
-                <tr style="height: 100%">
-                    <td class="links">${raw(links.join(' '))}</td>
-                    <td colspan="2"><p class="small">${raw(film.text || '')}</p>${note}</td>
-                </tr>`);
+            tbl.push(
+                <tr key={film.title+' #1'}>
+                    <td nowrap="true">{MONTH[Number(date[1])-1]} {Number(date[2])}</td>
+                    <td rowSpan="2">{poster}</td>
+                    {title}
+                    <td nowrap="true" style={{textAlign: 'right'}}>{film.series} {seen}</td>
+                </tr>);
+            tbl.push(
+                <tr key={film.title+' #2'} style={{height: '100%'}}>
+                    <td className="links">{links}</td>
+                    <td colSpan="2"><p className="small" dangerouslySetInnerHTML={{__html: film.text || ''}}></p>{note}</td>
+                </tr>);
         }
     });
 
-    return default_page(
-        make_nav('/film-'+year, [
-            ['/mnm-09',      "Monday Night Martin"],
-            ['/maths-links', "Maths"],
-            ['/pub-watch',   "Pub Watch"],
-            ['', "Film Picks", make_nav('/film-'+year, [
-                    ['/film-2016', "2016"],
-                    ['/film-2017', "2017"],
-                    ['/film-2018', "2018"],
-                ])
-            ],
-        ]),
-        [   html`<h1>${year} Film Picks</h1>`,
-            html`<p>This is my selection of films I might want to watch. It is <i>not</i> any sort of value judgment or recommendation. Here is a key to
-                    the links in the left-hand column:</p>`,
-            html`<dl class="films">
-                    <dt><img src="${IMG.imdb}" height="16"></dt>
-                    <dd>Goes to film's page at IMDB.</dd>
-                    <dt><img src="${IMG.youtube}" height="16"></dt>
-                    <dd>Goes to a trailer on YouTube.</dd>
-                    <dt><img src="${IMG.tomato}" height="16"></dt>
-                    <dd>Goes to film’s page at Rotten Tomatoes.</dd>
-                    <dt><img src="${IMG.netflix}" width="46"></dt>
-                    <dd>Goes to a site that tell’s you in which counties the film is available on Netflix.</dd>
-                    <dt><img src="${IMG.zooqle}" height="18"></dt>
-                    <dd>Goes to a site listing bitTorrents of the film. Caution: You should know what you're doing if you use this. <i>Never</i> use the direct download links!</dd>
-                </dl>`,
-            html`<p>Once I've seen a film I record my reaction like this: ${rate('love')}=love, ${rate('like')}=like, ${rate('ok')}=ok, ${rate('dislike')}=dislike, ${rate('hate')}=hate.
-                 Sometimes I add a note about my reaction.</p>`,
-            tbl
-        ],
-        '2018-01-23')
+    return tbl
 }
 //                <dt><img src="${IMG.paradiso}" width="45"></dt>
 //                <dd>Goes to a UK site that rents out DVDs and Blu-rays. Operates in same way as LoveFilm did before Amazon closed it.</dd>
 
+
+class FilmPickPage extends NormalPage {
+    constructor(app,year) {
+        const sub = make_nav([
+            {href:"/film-2016", text:"2016", key:'2016'},
+            {href:"/film-2017", text:"2017", key:'2017'},
+            {href:"/film-2018", text:"2018", key:'2018'},
+        ])
+        super(app, '/film-'+year, "Martin's Film Picks - "+year, '2018-03-03', 'film-pick', sub, {year})
+    }
+
+    main() {
+        return (
+            <Fragment>
+                <h1>{this.props.year} Film Picks</h1>
+                <p>This is my selection of films I might want to watch. It is <i>not</i> any sort of value judgment or recommendation. Here is a key to
+                        the links in the left-hand column:</p>
+                <dl className="films">
+                    <dt><img src={IMG.imdb} height="16"/></dt>
+                    <dd>Goes to film's page at IMDB.</dd>
+                    <dt><img src={IMG.youtube} height="16"/></dt>
+                    <dd>Goes to a trailer on YouTube.</dd>
+                    <dt><img src={IMG.tomato} height="16"/></dt>
+                    <dd>Goes to film’s page at Rotten Tomatoes.</dd>
+                    <dt><img src={IMG.netflix} width="46"/></dt>
+                    <dd>Goes to a site that tell’s you in which counties the film is available on Netflix.</dd>
+                    <dt><img src={IMG.zooqle} height="18"/></dt>
+                    <dd>Goes to a site listing bitTorrents of the film. Caution: You should know what you're doing if you use this. <i>Never</i> use the direct download links!</dd>
+                </dl>
+                <p>Once I've seen a film I record my reaction like this: {rate('love')}=love, {rate('like')}=like, {rate('ok')}=ok, {rate('dislike')}=dislike, {rate('hate')}=hate.
+                     Sometimes I add a note about my reaction.</p>
+                <table className="films">
+                    <tbody>
+                        {make_film_picks(this.props.year)}
+                    </tbody>
+                </table>
+            </Fragment>
+        )
+    }
+}
+
+
 export default function(app) {
-    ['2016', '2017', '2018'].forEach(year => {
-        app.route('/film-'+year, (state,emit) => {
-            emit('DOMTitleChange', "Martin’s Film Pick - "+year)
-            return make_film_picks(year)
-        })
-    })
+    new FilmPickPage(app,'2016')
+    new FilmPickPage(app,'2017')
+    new FilmPickPage(app,'2018')
 }

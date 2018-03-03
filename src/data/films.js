@@ -353,10 +353,10 @@ export default [
         poster:"https://upload.wikimedia.org/wikipedia/en/thumb/e/ec/Detour_%282016_film%29.png/180px-Detour_%282016_film%29.png",
         text:"A young law student blindly enters into a pact with a man who offers to kill his stepfather, whom he feels is responsible for the accident that sent his mother into a coma."},
 
-    {date:"2017-01-20", title:"The Red Turtle", link:"https://en.wikipedia.org/wiki/The_Red_Turtle", seen:"",
-        youtube:"Sw7BggqBpTk", imdb:"tt3666024", netflix:"", tomato:"the_red_turtle", zooqle:"the-red-turtle-110", paradiso:"",
-        poster:"https://upload.wikimedia.org/wikipedia/en/thumb/f/fe/The_Red_Turtle.png/180px-The_Red_Turtle.png",
-        text:"A Studio Ghibli coproduction. A man is shipwrecked on a deserted island and encounters a red turtle, which changes his life. The film has no dialogue."},
+    //{date:"2017-01-20", title:"The Red Turtle", link:"https://en.wikipedia.org/wiki/The_Red_Turtle", seen:"",
+    //    youtube:"Sw7BggqBpTk", imdb:"tt3666024", netflix:"", tomato:"the_red_turtle", zooqle:"the-red-turtle-110", paradiso:"",
+    //    poster:"https://upload.wikimedia.org/wikipedia/en/thumb/f/fe/The_Red_Turtle.png/180px-The_Red_Turtle.png",
+    //    text:"A Studio Ghibli coproduction. A man is shipwrecked on a deserted island and encounters a red turtle, which changes his life. The film has no dialogue."},
 
     {date:"2017-01-27", title:"T2 Trainspotting", link:"https://en.wikipedia.org/wiki/T2_Trainspotting", seen:"",
         youtube:"EsozpEE543w", imdb:"tt2763304", netflix:"", tomato:"t2_trainspotting", zooqle:"t2-trainspotting-tqh", paradiso:"",
@@ -418,7 +418,7 @@ export default [
     //  poster:"https://upload.wikimedia.org/wikipedia/en/thumb/f/f3/Collide_film_poster.jpg/180px-Collide_film_poster.jpg",
     //  text:"With Anthony Hopkins and Ben Kingsley. An American backpacker gets involved with a ring of drug smugglers as their driver, though he winds up on the run from his employers on a Cologne high-speed Autobahn."},
 
-    {date:"2017-03-03", title:"Logan", series:"X-Men #10", link:"https://en.wikipedia.org/wiki/Logan_(film)", seen:"",
+    {date:"2017-03-03", title:"Logan", series:"X-Men #10", link:"https://en.wikipedia.org/wiki/Logan_(film)", seen:"like",
         youtube:"ny3hScFgCIQ", imdb:"tt3315342", netflix:"80149316", tomato:"logan_2017", zooqle:"logan-5jvh", paradiso:"",
         poster:"https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Logan_2017_poster.jpg/180px-Logan_2017_poster.jpg",
         text:"In the near future, a weary Logan cares for an ailing Professor X, somewhere on the Mexican border. However, Logan’s attempts to hide from the world, and his legacy, are upended when a young mutant arrives, pursued by dark forces."},
@@ -433,7 +433,7 @@ export default [
     //    poster:"https://upload.wikimedia.org/wikipedia/en/thumb/d/d7/I.T._Poster.jpg/180px-I.T._Poster.jpg",
     //    text:"A self-proclaimed millionaire, has his life turned upside down after firing his I.T. consultant."},
 
-    {date:"2017-03-10", title:"The Sense of an Ending", link:"https://en.wikipedia.org/wiki/The_Sense_of_an_Ending_(film)", seen:"",
+    {date:"2017-03-10", title:"The Sense of an Ending", link:"https://en.wikipedia.org/wiki/The_Sense_of_an_Ending_(film)", seen:"like",
         youtube:"8TbmL_iQbxA", imdb:"tt4827986", netflix:"", tomato:"the_sense_of_an_ending_2017", zooqle:"the-sense-of-an-ending-5lbm", paradiso:"the-sense-of-an-ending-205175",
         poster:"https://images-na.ssl-images-amazon.com/images/M/MV5BYzI5ZDM2NjYtNmVhMS00Y2Q4LTg5ZWUtZjUwOGNkZDJhNGY2L2ltYWdlXkEyXkFqcGdeQXVyMjM4NTM5NDY@._V1_UX182_CR0,0,182,268_AL_.jpg",
         text:"A man becomes haunted by his past and is presented with a mysterious legacy that causes him to re-think his current situation in life."},
@@ -727,7 +727,7 @@ export default [
         poster:"https://upload.wikimedia.org/wikipedia/en/thumb/c/cc/Crooked_House_film_poster.jpg/180px-Crooked_House_film_poster.jpg",
         text:"In Agatha Christie’s most twisted tale, a spy-turned-private-detective is lured by his former lover to catch her grandfather’s murderer before Scotland Yard exposes dark family secrets."},
 
-    {date:"2017-11-24", title:"Battle of the Sexes", link:"https://en.wikipedia.org/wiki/Battle_of_the_Sexes_(film)", seen:"",
+    {date:"2017-11-24", title:"Battle of the Sexes", link:"https://en.wikipedia.org/wiki/Battle_of_the_Sexes_(film)", seen:"love",
         youtube:"5AWP1K7FaFI", imdb:"tt4622512", netflix:"", tomato:"battle_of_the_sexes", zooqle:"battle-of-the-sexes-5fuy", paradiso:"",
         poster:"https://upload.wikimedia.org/wikipedia/en/thumb/2/29/Battle_of_the_Sexes_%28film%29.png/180px-Battle_of_the_Sexes_%28film%29.png",
         text:"The true story of the 1973 tennis match between World number one Billie Jean King and ex-champ and serial hustler Bobby Riggs."},
@@ -762,10 +762,10 @@ export default [
         poster:"https://upload.wikimedia.org/wikipedia/en/thumb/0/05/The_Foreigner_%282017_film%29.jpg/180px-The_Foreigner_%282017_film%29.jpg",
         text:"A humble businessman with a buried past seeks justice when his daughter is killed in an act of terrorism. A cat-and-mouse conflict ensues with a government official, whose past may hold clues to the killers' identities."},
 
-    {date:"2017-12-22", title:"Bright", link:"https://en.wikipedia.org/wiki/Bright_(film)", seen:"",
-        youtube:"6EZCBSsBxko", imdb:"tt5519340", netflix:"80119234", tomato:"bright", zooqle:"bright-6g18", paradiso:"",
-        poster:"https://upload.wikimedia.org/wikipedia/en/thumb/a/a7/BrightPoster.jpeg/180px-BrightPoster.jpeg",
-        text:"Set in a world where fantasy creatures live side by side with humans. A human cop is forced to work with an Orc to find a weapon everyone is prepared to kill for."},
+    //{date:"2017-12-22", title:"Bright", link:"https://en.wikipedia.org/wiki/Bright_(film)", seen:"",
+    //    youtube:"6EZCBSsBxko", imdb:"tt5519340", netflix:"80119234", tomato:"bright", zooqle:"bright-6g18", paradiso:"",
+    //    poster:"https://upload.wikimedia.org/wikipedia/en/thumb/a/a7/BrightPoster.jpeg/180px-BrightPoster.jpeg",
+    //    text:"Set in a world where fantasy creatures live side by side with humans. A human cop is forced to work with an Orc to find a weapon everyone is prepared to kill for."},
 
 
     //--------------------------------------------------------------------------
@@ -788,7 +788,7 @@ export default [
 
     {date:"2018-01-18", title:"Mary and the Witch’s Flower", lang:"jp", jp_title:"メアリと魔女の花", link:"https://en.wikipedia.org/wiki/Mary_and_the_Witch%27s_Flower", seen:"",
         youtube:"VqUKano2Hm4", imdb:"tt6336356", netflix:"", tomato:"mary_and_the_witchs_flower", zooqle:"mary-and-the-witch-s-flower-5xxb", paradiso:"",
-        poster:"https://upload.wikimedia.org/wikipedia/en/thumb/6/6e/Mary_and_the_witch%27s_flower_poster.jpg/180px-Mary_and_the_witch%27s_flower_poster.jpg",
+        poster:"https://resizing.flixster.com/pmxXliclzjyozWljsgakxHchRds=/206x305/v1.bTsxMjU3MDQwMDtqOzE3NjUwOzEyMDA7MTAxNjsxNDg1",
         text:"Based on <i>The Little Broomstick</i> by Mary Stewart, this is Studio Ponoc’s first feature film. It tells a story of a girl who finds a mysterious flower that can give her the power to become a witch for one night only."},
 
     {date:"2018-01-19", title:"Den of Thieves", link:"https://en.wikipedia.org/wiki/Den_of_Thieves_(film)", seen:"",
@@ -950,7 +950,7 @@ export default [
 
     {date:"2018-08-03", title:"The Equalizer 2", link:"https://en.wikipedia.org/wiki/The_Equalizer_2", seen:"",
         youtube:"", imdb:"tt3766354", netflix:"", tomato:"the_equalizer_2", zooqle:"", paradiso:"",
-        poster:"https://images-na.ssl-images-amazon.com/images/M/MV5BN2E0OWE1OTYtOWM0MS00YThkLWI3N2ItNDY1OWM4NGNlMTZjXkEyXkFqcGdeQXVyMjI4MjA3NDY@._V1_UY268_CR3,0,182,268_AL_.jpg",
+        poster:"https://i2.wp.com/teaser-trailer.com/wp-content/uploads/The-Equalizer-2.jpg?ssl=1",
         text:"A sequel to 2014 film <i>The Equalizer</i>, based on the TV series."},
 
     {date:"2018-08-17", title:"Captive State", link:"https://en.wikipedia.org/wiki/Captive_State_(film)", seen:"",

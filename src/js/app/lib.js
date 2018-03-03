@@ -1,5 +1,7 @@
-import {h,render} from 'preact'
-//import html from 'choo/html'
+
+export function $i(id) { return document.getElementById(id); }
+
+export function $q(sel) { return document.querySelectorAll(sel) }
 
 // http://javascript.crockford.com/remedial.html - supplant(object)
 export function strerp(str, obj) {
@@ -12,60 +14,65 @@ export function strerp(str, obj) {
 	);
 };
 
-export function default_page(side,body,date) {
-    //const navs = []
 
-	//let main =
+//import {h,render} from 'preact'
+//import html from 'choo/html'
 
-    //if (Array.isArray(side)) {
-	//    side.forEach(s => navs.push(s))
-	//}
-	//else {
-	//	navs.push(side)
-	//}
 
-	//if (Array.isArray(body)) {
-	//	body.forEach(b => main.appendChild(b))
-	//}
-	//else {
-	//	main = body
-	//}
-    //main.appendChild()
-
-    return
-        <div id="content">
-            <nav class="side">
-            	<a href="/"><img src={require('../../img/martian.png')}/></a>
-            	{side}
-            </nav>
-            <div class="body">{body}</div>
-            <div class="update">Last update: {date}</div>
-        </div>
-}
-
-export function make_nav(here,tree) {
-    const lis = []
-
-    tree.forEach(t => {
-        let li
-    	if (t.length == 2) {
-	        const [href,text] = t
-	        if (!href || href === here) {
-	            li = <li>{text}</li>
-	        }
-	        else {
-	            li = <li><a href={href}>{text}</a></li>
-	        }
-	    }
-	    else if (t.length == 3) {
-	        const [_,text,list] = t
-            li = <li>{text}:{list}</li>
-	    }
-        lis.push(li)
-    })
-
-    return <ul>{lis}</ul>
-}
+//export function normal_page(side,body,date) {
+//    //const navs = []
+//
+//	//let main =
+//
+//    //if (Array.isArray(side)) {
+//	//    side.forEach(s => navs.push(s))
+//	//}
+//	//else {
+//	//	navs.push(side)
+//	//}
+//
+//	//if (Array.isArray(body)) {
+//	//	body.forEach(b => main.appendChild(b))
+//	//}
+//	//else {
+//	//	main = body
+//	//}
+//    //main.appendChild()
+//
+//    return
+//        <Fragment>
+//            <nav class="side">
+//            	<a href="/"><img src={require('../../img/martian.png')}/></a>
+//            	{side}
+//            </nav>
+//            <div class="body">{body}</div>
+//            <div class="update">Last update: {date}</div>
+//        </Fragment>
+//}
+//
+//export function make_nav(here,tree) {
+//    const lis = []
+//
+//    tree.forEach(t => {
+//        let li
+//    	if (t.length == 2) {
+//	        const [href,text] = t
+//	        if (!href || href === here) {
+//	            li = <li>{text}</li>
+//	        }
+//	        else {
+//	            li = <li><a href={href}>{text}</a></li>
+//	        }
+//	    }
+//	    else if (t.length == 3) {
+//	        const [_,text,list] = t
+//            li = <li>{text}:{list}</li>
+//	    }
+//        lis.push(li)
+//    })
+//
+//    return <ul>{lis}</ul>
+//}
 
 
 // https://developers.google.com/web/fundamentals/getting-started/primers/promises#promisifying_xmlhttprequest
@@ -189,19 +196,14 @@ export function make_nav(here,tree) {
 //    return _mk_element(args, 'http://www.w3.org/2000/svg');
 //}
 
-export function $i(id) { return document.getElementById(id); }
-
 //export function $(str) {
 //	// https://davidwalsh.name/convert-html-stings-dom-nodes
 //	return document.createRange().createContextualFragment(str)
 //}
 
-export function $one(str) {
-	// https://davidwalsh.name/convert-html-stings-dom-nodes
-	return document.createRange().createContextualFragment(str).firstChild
-}
+//export function $one(str) {
+//	// https://davidwalsh.name/convert-html-stings-dom-nodes
+//	return document.createRange().createContextualFragment(str).firstChild
+//}
 
-export function $q(sel) {
-    return document.querySelectorAll(sel)
-}
 

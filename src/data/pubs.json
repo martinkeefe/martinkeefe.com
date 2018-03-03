@@ -56,7 +56,7 @@
 { "type": "Feature", "properties": { "_id": "gu236-sadlers-arms" }, "geometry": { "type": "Point", "coordinates": [ -0.509634686097956, 51.290046777071773 ] } },
 { "type": "Feature", "properties": { "_id": "gu236-white-hart-2" }, "geometry": { "type": "Point", "coordinates": [ -0.490502826081418, 51.300964152438553 ] } },
 { "type": "Feature", "properties": { "_id": "gu236-hautboy" }, "geometry": { "type": "Point", "coordinates": [ -0.4587543038, 51.299779565900003 ] } },
-{ "type": "Feature", "properties": { "_id": "gu236-anchor" }, "geometry": { "type": "Point", "coordinates": [ -0.490070454715169, 51.322859310519483 ] } },
+{ "type": "Feature", "properties": { "_id": "gu236-anchor-q" }, "geometry": { "type": "Point", "coordinates": [ -0.490070454715169, 51.322859310519483 ] } },
 { "type": "Feature", "properties": { "_id": "gu237-new-inn" }, "geometry": { "type": "Point", "coordinates": [ -0.541723607424716, 51.294472966989765 ] } },
 { "type": "Feature", "properties": { "_id": "gu236-three-mariners" }, "geometry": { "type": "Point", "coordinates": [ -0.488807260897997, 51.301381771360994 ] } },
 { "type": "Feature", "properties": { "_id": "gu236-george-hotel" }, "geometry": { "type": "Point", "coordinates": [ -0.492815, 51.29983 ] } },

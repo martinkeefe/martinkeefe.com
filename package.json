@@ -12,10 +12,9 @@
   "author": "Martin Keefe",
   "dependencies": {
     "leaflet": "^1.2.0",
+    "navigo": "^7.0.0",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "react-router-dom": "^4.2.2",
-    "three": "^0.88.0"
+    "react-dom": "^16.2.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

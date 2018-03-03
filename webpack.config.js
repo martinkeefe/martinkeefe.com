@@ -13,13 +13,14 @@ module.exports = {
     		//'nanocomponent',
     		'react',
     		'react-dom',
-    		'react-router-dom',
+    		'navigo',
+    		//'react-router-dom',
     		//'three',
     		//'three/TrackballControls',
-    		//'leaflet',
-    		//'./src/js/lib/L.LabelTextCollision',
+    		'leaflet',
+    		'./src/js/lib/L.LabelTextCollision',
     		//'./src/js/lib/L.OSGraticule',
-    		//'./src/js/lib/leaflet-beautify-marker-icon',
+    		'./src/js/lib/leaflet-beautify-marker-icon',
     		//'./src/js/lib/xgui',
     	],
 	},
@@ -54,9 +55,9 @@ module.exports = {
 	    //    //'global': {}, // bizarre lodash(?) webpack workaround
 	    //    //'global.GENTLY': false // superagent client fix
 	    //}),
-	    new webpack.ProvidePlugin({
-            'THREE': 'three/build/three'
-        }),
+	    //new webpack.ProvidePlugin({
+        //    'THREE': 'three/build/three'
+        //}),
         new HtmlWebpackPlugin({
        		title: 'Martin\'s Stuff',
        		favicon: './src/favicon.ico',
