@@ -1,7 +1,44 @@
-import React, {Fragment} from 'react'
+import React, {Fragment, Component} from 'react'
 import {NormalPage, make_nav} from '../app'
 
-import FILMS from '../../data/films'
+//------------------------------------------------------------------------------
+import AWS from 'aws-sdk'
+
+AWS.config.update({
+    region: "eu-west-2",
+    credentials: {
+        // Read-only access to DynamoDB for guests
+        accessKeyId: 'AKIAJBJIMDJ6QDS72SQA',
+        secretAccessKey: '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'
+    }
+})
+
+
+// https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html#scan-property
+async function fetch_films() {
+    const docClient = new AWS.DynamoDB.DocumentClient();
+
+    return new Promise(resolve => {
+        let films = sessionStorage.getItem('films');
+        if (films) {
+            resolve(JSON.parse(films))
+        }
+        else {
+            docClient.scan({TableName:'films'}, (err,data) => {
+                if (err) {
+                    console.log(err);
+                    resolve([])
+                }
+                else {
+                    sessionStorage.setItem('films', JSON.stringify(data.Items))
+                    resolve(data.Items)
+                }
+            });
+        }
+    });
+}
+
+//------------------------------------------------------------------------------
 
 const MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const IMG = {
@@ -36,21 +73,42 @@ function SP(key) {
     return <Fragment key={key}> </Fragment>
 }
 
-function make_film_picks(year)
-{
-    const tbl = [];
+//------------------------------------------------------------------------------
 
-    FILMS.forEach(film => {
-        const date = film.date.split('-');
+class FilmPicks extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {films:[]}
+    }
 
-        if (date.length == 3 && date[0] === year) {
+    setStateAsync(state) {
+        return new Promise(resolve => {
+            this.setState(state, resolve)
+        });
+    }
+
+    async componentDidMount() {
+        let films = await fetch_films()
+        films = films.filter(film => film.date.startsWith(this.props.year))
+        films.sort((a,b) => {
+            if (a.date < b.date) return -1;
+            if (a.date > b.date) return 1;
+            return 0;
+        })
+        await this.setStateAsync({films})
+    }
+
+    render() {
+        const picks = [];
+
+        this.state.films.forEach(film => {
+            const date = film.date.split('-');
             const poster = film.poster ? <img src={film.poster} width="96"/> : null;
-
             const links = [];
-            if (film.imdb) {
-                links.push(<a key="imdb" href={'http://www.imdb.com/title/'+film.imdb}><img src={IMG.imdb} height="16"/></a>);
-                links.push(SP("imdb_"))
-            }
+
+            links.push(<a key="imdb" href={'http://www.imdb.com/title/'+film.id}><img src={IMG.imdb} height="16"/></a>);
+            links.push(SP("imdb_"))
+
             if (film.youtube) {
                 links.push(<a key="youtube" href={'https://www.youtube.com/watch?v='+film.youtube}><img src={IMG.youtube} height="16"/></a>);
                 links.push(SP("youtube_"))
@@ -71,43 +129,44 @@ function make_film_picks(year)
             //    links.push(`<a href="https://www.cinemaparadiso.co.uk/rentals/${film.paradiso}.html"><img src="${IMG.paradiso}" width="46"></a>`);
             //}
 
-            let title = <a href={film.link}><i>{film.title}</i></a>;
+            const seen = film.seen ? rate(film.seen) : null;
+            let title = <Fragment>
+                    <div style={{float:'right'}}>{film.series} {seen}</div>
+                    <a href={film.link}><i>{film.title}</i></a>
+                </Fragment>
+
 
             if (film.lang) {
                 if (film.lang === 'jp') {
-                    title = <td>{title} <img style={{verticalAlign: 'baseline', paddingLeft: '5px'}} src={IMG.jp} height="13"/> {film[film.lang+'_title'] || ''}</td>;
+                    title = <Fragment>{title} <img style={{verticalAlign: 'baseline', paddingLeft: '5px'}} src={IMG.jp} height="13"/> {film[film.lang+'_title'] || ''}</Fragment>;
                 }
                 else {
-                    title = <td>{title} <img style={{verticalAlign: 'baseline', paddingLeft: '5px'}} src={IMG[film.lang]} height="13"/> <i>{film[film.lang+'_title'] || ''}</i></td>;
+                    title = <Fragment>{title} <img style={{verticalAlign: 'baseline', paddingLeft: '5px'}} src={IMG[film.lang]} height="13"/> <i>{film[film.lang+'_title'] || ''}</i></Fragment>;
                 }
             }
-            else {
-                title = <td>{title}</td>;
-            }
 
-            const seen = film.seen ? rate(film.seen) : null;
             const note = film.note ? <p className="small" dangerouslySetInnerHTML={{__html: `<i>${film.note}</i>`}}></p> : null;
 
-            tbl.push(
-                <tr key={film.title+' #1'}>
-                    <td nowrap="true">{MONTH[Number(date[1])-1]} {Number(date[2])}</td>
-                    <td rowSpan="2">{poster}</td>
-                    {title}
-                    <td nowrap="true" style={{textAlign: 'right'}}>{film.series} {seen}</td>
+            picks.push(
+                <tr key={film.id}>
+                    <td style={{width:'70px'}}>{MONTH[Number(date[1])-1]}&nbsp;{Number(date[2])}<br/>{links}</td>
+                    <td>{poster}</td>
+                    <td>{title}<p className="small" dangerouslySetInnerHTML={{__html: film.text || ''}}></p>{note}</td>
                 </tr>);
-            tbl.push(
-                <tr key={film.title+' #2'} style={{height: '100%'}}>
-                    <td className="links">{links}</td>
-                    <td colSpan="2"><p className="small" dangerouslySetInnerHTML={{__html: film.text || ''}}></p>{note}</td>
-                </tr>);
-        }
-    });
+        });
 
-    return tbl
+        return (
+            <table className="films">
+                <tbody>
+                    {picks}
+                </tbody>
+            </table>
+        )
+    }
 }
-//                <dt><img src="${IMG.paradiso}" width="45"></dt>
-//                <dd>Goes to a UK site that rents out DVDs and Blu-rays. Operates in same way as LoveFilm did before Amazon closed it.</dd>
 
+
+//------------------------------------------------------------------------------
 
 class FilmPickPage extends NormalPage {
     constructor(app,year) {
@@ -139,16 +198,13 @@ class FilmPickPage extends NormalPage {
                 </dl>
                 <p>Once I've seen a film I record my reaction like this: {rate('love')}=love, {rate('like')}=like, {rate('ok')}=ok, {rate('dislike')}=dislike, {rate('hate')}=hate.
                      Sometimes I add a note about my reaction.</p>
-                <table className="films">
-                    <tbody>
-                        {make_film_picks(this.props.year)}
-                    </tbody>
-                </table>
+                <FilmPicks key={this.props.year} year={this.props.year}/>
             </Fragment>
         )
     }
 }
 
+//------------------------------------------------------------------------------
 
 export default function(app) {
     new FilmPickPage(app,'2016')

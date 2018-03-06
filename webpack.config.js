@@ -9,12 +9,9 @@ module.exports = {
 	entry: {
 		app: './src/js/index.js',
     	vendor: [
-    		//'choo',
-    		//'nanocomponent',
     		'react',
     		'react-dom',
     		'navigo',
-    		//'react-router-dom',
     		//'three',
     		//'three/TrackballControls',
     		'leaflet',
@@ -22,6 +19,8 @@ module.exports = {
     		//'./src/js/lib/L.OSGraticule',
     		'./src/js/lib/leaflet-beautify-marker-icon',
     		//'./src/js/lib/xgui',
+            'aws-sdk',
+            'babel-polyfill',
     	],
 	},
 	output: {
