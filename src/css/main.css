@@ -444,3 +444,16 @@ table.gui td {
 	margin: 0 0 0 68px;
 	padding: 0 0 0.5em 0;
 }
+
+ul.recipe {
+	padding-left: 20px;
+}
+
+.recipe ul {
+	padding-left: 0px;
+	list-style-type: none;
+}
+
+.recipe li li {
+	font-weight: bold;
+}

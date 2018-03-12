@@ -11,7 +11,7 @@ module.exports = {
     	vendor: [
     		'react',
     		'react-dom',
-    		'navigo',
+    		'page',
     		//'three',
     		//'three/TrackballControls',
     		'leaflet',

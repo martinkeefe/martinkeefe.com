@@ -4,8 +4,8 @@ import ShadeBob from './shadebob'
 
 
 class HomePage extends NormalPage {
-	constructor(app) {
-		super(app, "/", "Martin's Stuff", '2018-02-03')
+	constructor(app, context) {
+		super(app, context, "Martin's Stuff", '2018-02-03')
 	}
 
 	side() {
@@ -25,5 +25,5 @@ class HomePage extends NormalPage {
 
 
 export default function(app) {
-	new HomePage(app)
+	app.add_page('', HomePage)
 }

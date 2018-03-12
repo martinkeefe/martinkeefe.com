@@ -1,41 +1,44 @@
 import React, {Fragment, Component} from 'react'
-import {NormalPage, make_nav} from '../app'
+import {NormalPage} from '../app'
 
 //------------------------------------------------------------------------------
 import AWS from 'aws-sdk'
 
 AWS.config.update({
     region: "eu-west-2",
-    credentials: {
-        // Read-only access to DynamoDB for guests
-        accessKeyId: 'AKIAJBJIMDJ6QDS72SQA',
-        secretAccessKey: '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'
-    }
+    credentials: new AWS.CognitoIdentityCredentials({
+        IdentityPoolId: 'eu-west-2:ea25abac-af76-46c7-9ea7-ad61b0a778ac',
+    })
 })
 
+//const admin = "4u('tLedsL"
+//const guest = "6t5L)pf(uM"
+
+const CACHE = true
 
 // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html#scan-property
 async function fetch_films() {
-    const docClient = new AWS.DynamoDB.DocumentClient();
-
     return new Promise(resolve => {
-        let films = sessionStorage.getItem('films');
+        let films = CACHE ? sessionStorage.getItem('films') : null
         if (films) {
             resolve(JSON.parse(films))
         }
         else {
+            const docClient = new AWS.DynamoDB.DocumentClient()
             docClient.scan({TableName:'films'}, (err,data) => {
                 if (err) {
                     console.log(err);
                     resolve([])
                 }
                 else {
-                    sessionStorage.setItem('films', JSON.stringify(data.Items))
+                    if (CACHE) {
+                        sessionStorage.setItem('films', JSON.stringify(data.Items))
+                    }
                     resolve(data.Items)
                 }
             });
         }
-    });
+    })
 }
 
 //------------------------------------------------------------------------------
@@ -169,19 +172,14 @@ class FilmPicks extends Component {
 //------------------------------------------------------------------------------
 
 class FilmPickPage extends NormalPage {
-    constructor(app,year) {
-        const sub = make_nav([
-            {href:"/film-2016", text:"2016", key:'2016'},
-            {href:"/film-2017", text:"2017", key:'2017'},
-            {href:"/film-2018", text:"2018", key:'2018'},
-        ])
-        super(app, '/film-'+year, "Martin's Film Picks - "+year, '2018-03-03', 'film-pick', sub, {year})
+    constructor(app, context) {
+        super(app, context, "Martin's Film Picks - "+context.params.year, '2018-03-03', 'film-pick')
     }
 
     main() {
         return (
             <Fragment>
-                <h1>{this.props.year} Film Picks</h1>
+                <h1>{this.context.params.year} Film Picks</h1>
                 <p>This is my selection of films I might want to watch. It is <i>not</i> any sort of value judgment or recommendation. Here is a key to
                         the links in the left-hand column:</p>
                 <dl className="films">
@@ -198,7 +196,7 @@ class FilmPickPage extends NormalPage {
                 </dl>
                 <p>Once I've seen a film I record my reaction like this: {rate('love')}=love, {rate('like')}=like, {rate('ok')}=ok, {rate('dislike')}=dislike, {rate('hate')}=hate.
                      Sometimes I add a note about my reaction.</p>
-                <FilmPicks key={this.props.year} year={this.props.year}/>
+                <FilmPicks key={this.context.params.year} year={this.context.params.year}/>
             </Fragment>
         )
     }
@@ -207,7 +205,13 @@ class FilmPickPage extends NormalPage {
 //------------------------------------------------------------------------------
 
 export default function(app) {
-    new FilmPickPage(app,'2016')
-    new FilmPickPage(app,'2017')
-    new FilmPickPage(app,'2018')
+    app.menu.push({key:'film-pick', text:'Film Picks', href:"/film-pick/2018", sub:[
+        {href:"/film-pick/2016", text:"2016", key:'2016'},
+        {href:"/film-pick/2017", text:"2017", key:'2017'},
+        {href:"/film-pick/2018", text:"2018", key:'2018'},
+    ]})
+    app.add_page('/film-pick/:year', FilmPickPage)
+    app.redirect('/film-2016', '/film-pick/2016')
+    app.redirect('/film-2017', '/film-pick/2017')
+    app.redirect('/film-2018', '/film-pick/2018')
 }

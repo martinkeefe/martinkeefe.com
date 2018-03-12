@@ -1,5 +1,5 @@
 import React, {Fragment, Component} from 'react'
-import {NormalPage, make_nav} from '../app'
+import {NormalPage} from '../app'
 
 import 'leaflet'
 
@@ -359,8 +359,8 @@ function make_popup(pub) {
 //------------------------------------------------------------------------------
 
 class PubWatchPage extends NormalPage {
-    constructor(app) {
-        super(app, '/pub-watch', "Martin's Pub Watch", '2018-03-03')
+    constructor(app, context) {
+        super(app, context, "Martin's Pub Watch", '2018-03-03')
     }
 
     main() {
@@ -385,5 +385,6 @@ class PubWatchPage extends NormalPage {
 //------------------------------------------------------------------------------
 
 export default function(app) {
-	new PubWatchPage(app)
+	app.menu.push({key:'pub-watch', text:'Pub Watch', href:"/pub-watch"})
+	app.add_page('/pub-watch', PubWatchPage)
 }

@@ -1,5 +1,5 @@
 import React, {Fragment,Component} from 'react'
-import {NormalPage, make_nav} from '../app'
+import {NormalPage} from '../app'
 
 const MNMS = [
 	{num:'08', title:"Claudia’s Birthday", when:'September 2008', date:'2016-09-17'},
@@ -28,19 +28,9 @@ function s3_src(mnm,i,ext) {
 //------------------------------------------------------------------------------
 
 class MondayPage extends NormalPage {
-  	constructor(app,mnm) {
-		const sub = make_nav(MNMS.map(mnm => {
-			return {href:"/mnm-"+mnm.num, text:`#${mnm.num}: ${mnm.title}`, key:mnm.num}
-		}))
-		super(app, '/mnm-'+mnm.num, "Monday Night Martin - "+mnm.title, mnm.date, 'mnm', sub)
-
-		// Redirect old MNM pages
-		app.router.on('/music/mnm'+mnm.num, () => {
-			app.router.pause(true)
-			app.router.navigate('/mnm-'+mnm.num)
-			app.router.pause(false)
-			app.router.resolve()
-		})
+  	constructor(app, context) {
+  		const mnm = MNMS.find(val => val.num == context.params.mnm)
+		super(app, context, "Monday Night Martin - "+mnm.title, mnm.date, 'mnm')
 
 		this.mnm = mnm
 		this.recs = require('../../data/mnm/mnm'+mnm.num+'.csv')
@@ -155,7 +145,13 @@ class PlayListItem extends Component {
 //------------------------------------------------------------------------------
 
 export default function(app) {
+	app.menu.push({key:'mnm', text:'Monday Night Martin', href:"/mnm-09", sub:MNMS.map(mnm => {
+			return {href:"/mnm/"+mnm.num, text:`#${mnm.num}: ${mnm.title}`, key:mnm.num}
+		})
+	})
+	app.add_page('/mnm/:mnm', MondayPage)
 	MNMS.forEach(mnm => {
-		new MondayPage(app,mnm)
+		app.redirect('/music/mnm'+mnm.num, '/mnm/'+mnm.num)
+		app.redirect('/mnm-'+mnm.num, '/mnm/'+mnm.num)
 	})
 }

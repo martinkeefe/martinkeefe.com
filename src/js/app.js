@@ -1,15 +1,20 @@
 import React, {Fragment, Component} from 'react'
 import ReactDOM from 'react-dom'
-import Navigo from 'navigo'
+import page from 'page'
 
 
-class App {
-	constructor() {
-		this.router = new Navigo(null)
+const app = new (class App {
+	constructor(elem_id='app') {
+		this.el =  document.getElementById(elem_id)
+		this.menu = []
+	}
+
+	use(imp) {
+		imp.default(this)
 	}
 
 	render(dom) {
-		ReactDOM.render(dom, document.getElementById('app'))
+		ReactDOM.render(dom, this.el)
 	}
 
 	set_title(title) {
@@ -17,27 +22,46 @@ class App {
 		el.innerHTML = title
 	}
 
-	start() {
-		this.router.resolve()
+	// Routing
+	add_route(path, ...funcs) {
+		page(path, ...funcs)
 	}
-}
 
-const app = new App()
+	show(path) {
+		page.show(path)
+	}
+
+	redirect(path1,path2) {
+		page.redirect(path1,path2)
+	}
+
+	start() {
+		page()
+	}
+
+	add_page(path, klass, props={}) {
+		this.add_route(path, context => {
+			const page = new klass(this, context, props)
+			app.render(page.render())
+		})
+	}
+})()
 
 export default app
 
 
-export function Link(props) {
-	if (window.location.pathname === props.to) {
+function Link(props) {
+	console.log('Link', props.here.context.pathname, props.to)
+	if (props.here.context.pathname === props.to) {
 		return props.children
 	}
 	else {
-		const click = e => {
-			e.preventDefault()
-  			app.router.navigate(props.to)
-		}
+		//const click = e => {
+		//	e.preventDefault()
+  		//	app.nav_to(props.to)
+		//}
 		return (
-			<a href={props.to} onClick={click}>
+			<a href={props.to}>
 				{props.children}
 			</a>
 		)
@@ -45,11 +69,27 @@ export function Link(props) {
 }
 
 
+class SideNav extends Component {
+	render(def=this.props.items) {
+		const items = def.map(item => {
+			if (item.sub && item.key === this.props.ident) {
+				return <li key={item.key}>{item.text}{this.render(item.sub)}</li>
+			}
+			if (item.key === this.props.key) {
+				return <li key={item.key}>{item.text}</li>
+			}
+			return <li key={item.key}><Link here={this.props.here} to={item.href}>{item.text}</Link></li>
+		})
+
+		return <ul>{items}</ul>
+	}
+}
+
 
 export class NormalPage extends Component {
-	constructor(app, path, title, date, key, sub, props={}) {
-		super(Object.assign({}, {app, path, title, date, key, sub}, props))
-		app.router.on(path, () => app.render(this.render()))
+	constructor(app, context, title, date, key, props={}) {
+		super(Object.assign({}, {app, title, date, key}, props))
+		this.context = context
 	}
 
 	main() {
@@ -63,18 +103,11 @@ export class NormalPage extends Component {
 	render() {
 		this.props.app.set_title(this.props.title)
 
-		const top = [
-			{key:'mnm', text:'Monday Night Martin', href:"/mnm-09"},
-			//{key:'maths', text:'Maths', href:"/maths-links"},
-			{key:'pub-watch', text:'Pub Watch', href:"/pub-watch"},
-			{key:'film-pick', text:'Film Picks', href:"/film-2018"},
-		]
-
 	    return (
 	        <Fragment>
 	            <nav className="side">
-	            	<Link to="/"><img src={require('../img/martian.png')}/></Link>
-	            	{make_nav(top, this.props.key, this.props.sub)}
+	            	<Link here={this} to="/"><img src={require('../img/martian.png')}/></Link>
+	            	<SideNav here={this} items={this.props.app.menu} ident={this.props.key}/>
 	            	{this.side()}
 	            </nav>
 	            <div className="body">
@@ -85,17 +118,3 @@ export class NormalPage extends Component {
 	    )
 	}
 }
-
-export function make_nav(top,key,sub) {
-    const items = top.map(t => {
-    	if (t.href) {
-            return <li key={t.key}><Link to={t.href}>{t.text}</Link>{t.key === key ? sub : null}</li>
-	    }
-	    else {
-            return <li key={t.key}>{t.text}{t.key === key ? sub : null}</li>
-	    }
-    })
-
-    return <ul>{items}</ul>
-}
-

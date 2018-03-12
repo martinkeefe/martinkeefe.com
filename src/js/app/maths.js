@@ -72,5 +72,6 @@ class MathLinkPage extends NormalPage {
 }
 
 export default function(app) {
+	app.menu.push({key:'maths', text:'Maths', href:"/maths-links"})
 	new MathLinkPage(app)
 }
