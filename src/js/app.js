@@ -1,6 +1,7 @@
 import React, {Fragment, Component} from 'react'
 import ReactDOM from 'react-dom'
 import page from 'page'
+import StickySidebar from './lib/sticky-sidebar'
 
 
 const app = new (class App {
@@ -14,6 +15,7 @@ const app = new (class App {
 	}
 
 	render(dom) {
+		//console.log(dom)
 		ReactDOM.render(dom, this.el)
 	}
 
@@ -51,20 +53,11 @@ export default app
 
 
 function Link(props) {
-	console.log('Link', props.here.context.pathname, props.to)
-	if (props.here.context.pathname === props.to) {
+	if (props.here.props.context.pathname === props.to) {
 		return props.children
 	}
 	else {
-		//const click = e => {
-		//	e.preventDefault()
-  		//	app.nav_to(props.to)
-		//}
-		return (
-			<a href={props.to}>
-				{props.children}
-			</a>
-		)
+		return <a href={props.to}>{props.children}</a>
 	}
 }
 
@@ -72,13 +65,13 @@ function Link(props) {
 class SideNav extends Component {
 	render(def=this.props.items) {
 		const items = def.map(item => {
-			if (item.sub && item.key === this.props.ident) {
-				return <li key={item.key}>{item.text}{this.render(item.sub)}</li>
+			if (item.sub && item.ident === this.props.ident) {
+				return <li key={item.ident}>{item.text}{this.render(item.sub)}</li>
 			}
-			if (item.key === this.props.key) {
-				return <li key={item.key}>{item.text}</li>
+			if (item.ident === this.props.ident) {
+				return <li key={item.ident}>{item.text}</li>
 			}
-			return <li key={item.key}><Link here={this.props.here} to={item.href}>{item.text}</Link></li>
+			return <li key={item.ident}><Link here={this.props.here} to={item.href}>{item.text}</Link></li>
 		})
 
 		return <ul>{items}</ul>
@@ -87,9 +80,9 @@ class SideNav extends Component {
 
 
 export class NormalPage extends Component {
-	constructor(app, context, title, date, key, props={}) {
-		super(Object.assign({}, {app, title, date, key}, props))
-		this.context = context
+	constructor(props) {
+		super(props)
+		this.sticky = null
 	}
 
 	main() {
@@ -105,10 +98,12 @@ export class NormalPage extends Component {
 
 	    return (
 	        <Fragment>
-	            <nav className="side">
-	            	<Link here={this} to="/"><img src={require('../img/martian.png')}/></Link>
-	            	<SideNav here={this} items={this.props.app.menu} ident={this.props.key}/>
-	            	{this.side()}
+	            <nav id="sidebar" className="side">
+	            	<div className="sidebar__inner">
+		            	<Link here={this} to="/"><img src={require('../img/martian.png')}/></Link>
+		            	<SideNav here={this} items={this.props.app.menu} ident={this.props.ident}/>
+		            	{this.side()}
+		            </div>
 	            </nav>
 	            <div className="body">
 	            	{this.main()}
@@ -116,5 +111,36 @@ export class NormalPage extends Component {
 	            </div>
 	        </Fragment>
 	    )
+	}
+
+	update() {
+		if (!this.sticky) {
+			this.sticky = new StickySidebar('#sidebar', {
+			        containerSelector: '#app',
+			        innerWrapperSelector: '.sidebar__inner',
+			        topSpacing: 20,
+			        bottomSpacing: 20
+			    });
+			//console.log('new StickySidebar')
+		}
+		else {
+			this.sticky.updateSticky()
+			//console.log('updateSticky')
+		}
+	}
+
+	componentDidMount() {
+		this.update()
+	}
+
+	componentDidUpdate() {
+		this.update()
+	}
+
+	componentWillUnmount() {
+		if (this.sticky) {
+			this.sticky.destroy()
+			this.sticky = null
+		}
 	}
 }

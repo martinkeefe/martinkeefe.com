@@ -1,19 +1,8 @@
 import React, {Fragment} from 'react'
-import {NormalPage, make_nav} from '../app'
+import {NormalPage} from '../app'
 
 
 class MathLinkPage extends NormalPage {
-	constructor(app) {
-		super(app, '/maths-links', "Martin's Maths Links", '2016-09-17')
-
-		this.key = 'maths'
-		this.sub = make_nav([
-			{href:"/parasurf-intro", text:"Parametric Surfaces", key:'parasurf'},
-			{href:"/mathjax-guide-1", text:"MathJax Guide", key:'mathjax-guide'},
-			{href:"/tiling-gloss", text:"Tiling Glossary", key:'tiling'},
-		])
-	}
-
 	main() {
 		return (
 			<Fragment>
@@ -71,7 +60,17 @@ class MathLinkPage extends NormalPage {
 	}
 }
 
+
 export default function(app) {
-	app.menu.push({key:'maths', text:'Maths', href:"/maths-links"})
-	new MathLinkPage(app)
+	app.menu.push({ident:'maths', text:'Maths', href:"/maths-links",
+		//sub:[
+		//	{href:"/parasurf/intro", text:"Parametric Surfaces", ident:'parasurf'},
+		//	{href:"/mathjax-guide/1", text:"MathJax Guide", ident:'mathjax-guide'},
+		//	{href:"/tiling-gloss", text:"Tiling Glossary", ident:'tiling'},
+		//]
+	})
+
+    app.add_route('/maths-links', context => {
+        app.render(<MathLinkPage {...{app, context}} title={"Martin's Maths Links"} date="2016-09-17" ident="maths"/>)
+    })
 }

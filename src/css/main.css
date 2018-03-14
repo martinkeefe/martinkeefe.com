@@ -450,8 +450,8 @@ ul.recipe {
 }
 
 .recipe ul {
-	padding-left: 0px;
-	list-style-type: none;
+	padding-left: 20px;
+	-list-style-type: none;
 }
 
 .recipe li li {

@@ -12,6 +12,7 @@ module.exports = {
     		'react',
     		'react-dom',
     		'page',
+            './src/js/lib/sticky-sidebar',
     		//'three',
     		//'three/TrackballControls',
     		'leaflet',

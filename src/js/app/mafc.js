@@ -1,11 +1,10 @@
 import React, {Fragment, Component} from 'react'
 import {NormalPage} from '../app'
-
 import {Master, Pressure, Pause, quart, quarts} from './mafc-utils'
 
 
 const MAFC = {
-	'potage-permentier': (
+	'potage-parmentier': (
 			<Fragment>
 				<h2>Potage Parmentier <Master/><br/><small>[Leek or Onion and Potato Soup]</small></h2>
 				<p>Leek and potato soup smells good, tastes good, and is simplicity itself
@@ -49,30 +48,23 @@ const MAFC = {
 		),
 }
 
-class MAFCPage extends NormalPage {
-	constructor(app, context) {
-		super(app, context, "Martin's French Cooking", '2018-03-10', 'mafc')
-	}
 
+class MAFCPage extends NormalPage {
 	main() {
 		return (
 			<Fragment>
 				<h1>French Cooking</h1>
 				<p>All text on this page is derived from the 1961 classic <i>Mastering the Art of
 				French Cooking</i> by Julia Child, Louisette Bertholle, and Simone Beck.</p>
-				{MAFC[this.context.params.id]}
+				{MAFC[this.props.context.params.id]}
 			</Fragment>
 		)
 	}
-
 }
 
 
-
-
 export default function(app) {
-	//app.menu.push({key:'maths', text:'Maths', href:"/maths-links"})
-	//new MAFCPage(app)
-
-	app.add_page('/mafc/:id', MAFCPage)
+    app.add_route('/mafc/:id', context => {
+        app.render(<MAFCPage {...{app, context}} title={"Martin's French Cooking"} date="2018-03-10" ident="mafc"/>)
+    })
 }

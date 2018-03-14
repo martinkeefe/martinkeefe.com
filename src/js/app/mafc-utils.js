@@ -3,8 +3,8 @@ import React from 'react'
 // * variations follow.
 // (.) you may prepare the dish ahead of time up to this point, then complete the recipe later.
 
-let SYS = 'uk'
-let PRESS = true
+let SYS = 'us'
+let PRESS = false
 
 export function Master(props) {
 	return <abbr title="master recipe, variations follow">*</abbr>

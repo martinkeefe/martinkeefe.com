@@ -359,10 +359,6 @@ function make_popup(pub) {
 //------------------------------------------------------------------------------
 
 class PubWatchPage extends NormalPage {
-    constructor(app, context) {
-        super(app, context, "Martin's Pub Watch", '2018-03-03')
-    }
-
     main() {
         return (
             <Fragment>
@@ -385,6 +381,9 @@ class PubWatchPage extends NormalPage {
 //------------------------------------------------------------------------------
 
 export default function(app) {
-	app.menu.push({key:'pub-watch', text:'Pub Watch', href:"/pub-watch"})
-	app.add_page('/pub-watch', PubWatchPage)
+	app.menu.push({ident:'pub-watch', text:'Pub Watch', href:"/pub-watch"})
+
+    app.add_route('/pub-watch', context => {
+        app.render(<PubWatchPage {...{app, context}} title="Martin's Pub Watch" date="2018-03-03"/>)
+    })
 }

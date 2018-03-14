@@ -4,10 +4,6 @@ import ShadeBob from './shadebob'
 
 
 class HomePage extends NormalPage {
-	constructor(app, context) {
-		super(app, context, "Martin's Stuff", '2018-02-03')
-	}
-
 	side() {
 		return (
 			<Fragment>
@@ -25,5 +21,7 @@ class HomePage extends NormalPage {
 
 
 export default function(app) {
-	app.add_page('', HomePage)
+	app.add_route('', context => {
+		app.render(<HomePage {...{app, context}} title="Martin's Stuff" date="2018-02-03"/>)
+	})
 }

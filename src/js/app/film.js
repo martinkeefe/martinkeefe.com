@@ -14,7 +14,7 @@ AWS.config.update({
 //const admin = "4u('tLedsL"
 //const guest = "6t5L)pf(uM"
 
-const CACHE = true
+const CACHE = false
 
 // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html#scan-property
 async function fetch_films() {
@@ -101,12 +101,16 @@ class FilmPicks extends Component {
         await this.setStateAsync({films})
     }
 
+    componentDidUpdate() {
+        this.props.page.update()
+    }
+
     render() {
         const picks = [];
 
         this.state.films.forEach(film => {
             const date = film.date.split('-');
-            const poster = film.poster ? <img src={film.poster} width="96"/> : null;
+            const poster = film.poster ? <img src={film.poster} width="96" height="142"/> : null;
             const links = [];
 
             links.push(<a key="imdb" href={'http://www.imdb.com/title/'+film.id}><img src={IMG.imdb} height="16"/></a>);
@@ -172,14 +176,10 @@ class FilmPicks extends Component {
 //------------------------------------------------------------------------------
 
 class FilmPickPage extends NormalPage {
-    constructor(app, context) {
-        super(app, context, "Martin's Film Picks - "+context.params.year, '2018-03-03', 'film-pick')
-    }
-
     main() {
         return (
             <Fragment>
-                <h1>{this.context.params.year} Film Picks</h1>
+                <h1>{this.props.context.params.year} Film Picks</h1>
                 <p>This is my selection of films I might want to watch. It is <i>not</i> any sort of value judgment or recommendation. Here is a key to
                         the links in the left-hand column:</p>
                 <dl className="films">
@@ -196,7 +196,7 @@ class FilmPickPage extends NormalPage {
                 </dl>
                 <p>Once I've seen a film I record my reaction like this: {rate('love')}=love, {rate('like')}=like, {rate('ok')}=ok, {rate('dislike')}=dislike, {rate('hate')}=hate.
                      Sometimes I add a note about my reaction.</p>
-                <FilmPicks key={this.context.params.year} year={this.context.params.year}/>
+                <FilmPicks key={this.props.context.params.year} year={this.props.context.params.year} page={this}/>
             </Fragment>
         )
     }
@@ -205,12 +205,16 @@ class FilmPickPage extends NormalPage {
 //------------------------------------------------------------------------------
 
 export default function(app) {
-    app.menu.push({key:'film-pick', text:'Film Picks', href:"/film-pick/2018", sub:[
-        {href:"/film-pick/2016", text:"2016", key:'2016'},
-        {href:"/film-pick/2017", text:"2017", key:'2017'},
-        {href:"/film-pick/2018", text:"2018", key:'2018'},
+    app.menu.push({ident:'film-pick', text:'Film Picks', href:"/film-pick/2018", sub:[
+        {href:"/film-pick/2016", text:"2016", ident:'2016'},
+        {href:"/film-pick/2017", text:"2017", ident:'2017'},
+        {href:"/film-pick/2018", text:"2018", ident:'2018'},
     ]})
-    app.add_page('/film-pick/:year', FilmPickPage)
+
+    app.add_route('/film-pick/:year', context => {
+        app.render(<FilmPickPage {...{app, context}} title={"Martin's Film Picks - "+context.params.year} date="2018-03-03" ident="film-pick"/>)
+    })
+
     app.redirect('/film-2016', '/film-pick/2016')
     app.redirect('/film-2017', '/film-pick/2017')
     app.redirect('/film-2018', '/film-pick/2018')
