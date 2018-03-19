@@ -5,9 +5,11 @@ import StickySidebar from './lib/sticky-sidebar'
 
 
 const app = new (class App {
-	constructor(elem_id='app') {
+	constructor(elem_id='root') {
 		this.el =  document.getElementById(elem_id)
 		this.menu = []
+		this.user = null
+		this.user_session = null
 	}
 
 	use(imp) {
@@ -41,12 +43,12 @@ const app = new (class App {
 		page()
 	}
 
-	add_page(path, klass, props={}) {
-		this.add_route(path, context => {
-			const page = new klass(this, context, props)
-			app.render(page.render())
-		})
-	}
+	//add_page(path, klass, props={}) {
+	//	this.add_route(path, context => {
+	//		const page = new klass(this, context, props)
+	//		app.render(page.render())
+	//	})
+	//}
 })()
 
 export default app
@@ -116,7 +118,7 @@ export class NormalPage extends Component {
 	update() {
 		if (!this.sticky) {
 			this.sticky = new StickySidebar('#sidebar', {
-			        containerSelector: '#app',
+			        containerSelector: '#root',
 			        innerWrapperSelector: '.sidebar__inner',
 			        topSpacing: 20,
 			        bottomSpacing: 20

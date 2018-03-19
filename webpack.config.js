@@ -21,6 +21,8 @@ module.exports = {
     		'./src/js/lib/leaflet-beautify-marker-icon',
     		//'./src/js/lib/xgui',
             'aws-sdk',
+            'amazon-cognito-identity-js',
+            //'aws-amplify',
             'babel-polyfill',
     	],
 	},

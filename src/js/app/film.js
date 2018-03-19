@@ -14,7 +14,7 @@ AWS.config.update({
 //const admin = "4u('tLedsL"
 //const guest = "6t5L)pf(uM"
 
-const CACHE = false
+const CACHE = true
 
 // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html#scan-property
 async function fetch_films() {
