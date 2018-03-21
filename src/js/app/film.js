@@ -1,5 +1,6 @@
 import React, {Fragment, Component} from 'react'
-import {NormalPage} from '../app'
+import {connect} from 'react-redux'
+import app /* Horrible hack!! */, {NormalPage} from '../app'
 
 //------------------------------------------------------------------------------
 import AWS from 'aws-sdk'
@@ -14,11 +15,12 @@ AWS.config.update({
 //const admin = "4u('tLedsL"
 //const guest = "6t5L)pf(uM"
 
-const CACHE = true
+const CACHE = false
 
 // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html#scan-property
-async function fetch_films() {
-    return new Promise(resolve => {
+//async
+function fetch_films(year) {
+    return new Promise((resolve, reject) => {
         let films = CACHE ? sessionStorage.getItem('films') : null
         if (films) {
             resolve(JSON.parse(films))
@@ -28,17 +30,27 @@ async function fetch_films() {
             docClient.scan({TableName:'films'}, (err,data) => {
                 if (err) {
                     console.log(err);
-                    resolve([])
+                    reject(err)
                 }
                 else {
                     if (CACHE) {
                         sessionStorage.setItem('films', JSON.stringify(data.Items))
                     }
-                    resolve(data.Items)
+                    resolve(select(data.Items,year))
                 }
             });
         }
     })
+}
+
+function select(films, year) {
+    films = films.filter(film => film.date.startsWith(year))
+    films.sort((a,b) => {
+        if (a.date < b.date) return -1;
+        if (a.date > b.date) return 1;
+        return 0;
+    })
+    return films
 }
 
 //------------------------------------------------------------------------------
@@ -79,36 +91,26 @@ function SP(key) {
 //------------------------------------------------------------------------------
 
 class FilmPicks extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {films:[]}
+    componentWillMount() {
+        this.props.fetch(this.props.year)
     }
 
-    setStateAsync(state) {
-        return new Promise(resolve => {
-            this.setState(state, resolve)
-        });
-    }
-
-    async componentDidMount() {
-        let films = await fetch_films()
-        films = films.filter(film => film.date.startsWith(this.props.year))
-        films.sort((a,b) => {
-            if (a.date < b.date) return -1;
-            if (a.date > b.date) return 1;
-            return 0;
-        })
-        await this.setStateAsync({films})
-    }
-
-    componentDidUpdate() {
-        this.props.page.update()
-    }
+    //compponentDidUpdate() {
+    //    console.log('FilmPicks','compponentDidUpdate')
+    //    app.page.update()
+    //}
 
     render() {
-        const picks = [];
+        const {data, loading, error} = this.props.films
 
-        this.state.films.forEach(film => {
+        if (loading) {
+            return <div className="container"><h3>Loading...</h3></div>
+        }
+        else if (error) {
+            return <div className="alert alert-danger">Error: {error.message}</div>
+        }
+
+        const picks = data.map(film => {
             const date = film.date.split('-');
             const poster = film.poster ? <img src={film.poster} width="96" height="142"/> : null;
             const links = [];
@@ -154,7 +156,7 @@ class FilmPicks extends Component {
 
             const note = film.note ? <p className="small" dangerouslySetInnerHTML={{__html: `<i>${film.note}</i>`}}></p> : null;
 
-            picks.push(
+            return (
                 <tr key={film.id}>
                     <td style={{width:'70px'}}>{MONTH[Number(date[1])-1]}&nbsp;{Number(date[2])}<br/>{links}</td>
                     <td>{poster}</td>
@@ -175,47 +177,130 @@ class FilmPicks extends Component {
 
 //------------------------------------------------------------------------------
 
-class FilmPickPage extends NormalPage {
-    main() {
-        return (
-            <Fragment>
-                <h1>{this.props.context.params.year} Film Picks</h1>
-                <p>This is my selection of films I might want to watch. It is <i>not</i> any sort of value judgment or recommendation. Here is a key to
-                        the links in the left-hand column:</p>
-                <dl className="films">
-                    <dt><img src={IMG.imdb} height="16"/></dt>
-                    <dd>Goes to film's page at IMDB.</dd>
-                    <dt><img src={IMG.youtube} height="16"/></dt>
-                    <dd>Goes to a trailer on YouTube.</dd>
-                    <dt><img src={IMG.tomato} height="16"/></dt>
-                    <dd>Goes to film’s page at Rotten Tomatoes.</dd>
-                    <dt><img src={IMG.netflix} width="46"/></dt>
-                    <dd>Goes to a site that tell’s you in which counties the film is available on Netflix.</dd>
-                    <dt><img src={IMG.zooqle} height="18"/></dt>
-                    <dd>Goes to a site listing bitTorrents of the film. Caution: You should know what you're doing if you use this. <i>Never</i> use the direct download links!</dd>
-                </dl>
-                <p>Once I've seen a film I record my reaction like this: {rate('love')}=love, {rate('like')}=like, {rate('ok')}=ok, {rate('dislike')}=dislike, {rate('hate')}=hate.
-                     Sometimes I add a note about my reaction.</p>
-                <FilmPicks key={this.props.context.params.year} year={this.props.context.params.year} page={this}/>
-            </Fragment>
-        )
+const FilmPickPage = props => {
+    return (
+        <NormalPage title={"Martin's Film Picks - "+props.match.params.year} date="2018-03-03" ident="film-pick">
+            <h1>{props.match.params.year} Film Picks</h1>
+            <p>This is my selection of films I might want to watch. It is <i>not</i> any sort of value judgment or recommendation. Here is a key to
+                    the links in the left-hand column:</p>
+            <dl className="films">
+                <dt><img src={IMG.imdb} height="16"/></dt>
+                <dd>Goes to film's page at IMDB.</dd>
+                <dt><img src={IMG.youtube} height="16"/></dt>
+                <dd>Goes to a trailer on YouTube.</dd>
+                <dt><img src={IMG.tomato} height="16"/></dt>
+                <dd>Goes to film’s page at Rotten Tomatoes.</dd>
+                <dt><img src={IMG.netflix} width="46"/></dt>
+                <dd>Goes to a site that tell’s you in which counties the film is available on Netflix.</dd>
+                <dt><img src={IMG.zooqle} height="18"/></dt>
+                <dd>Goes to a site listing bitTorrents of the film. Caution: You should know what you're doing if you use this. <i>Never</i> use the direct download links!</dd>
+            </dl>
+            <p>Once I've seen a film I record my reaction like this: {rate('love')}=love, {rate('like')}=like, {rate('ok')}=ok, {rate('dislike')}=dislike, {rate('hate')}=hate.
+                 Sometimes I add a note about my reaction.</p>
+            <Films key={props.match.params.year} year={props.match.params.year}/>
+        </NormalPage>
+    )
+}
+
+//------------------------------------------------------------------------------
+// Actions
+
+const FETCH = 'FILMS_FETCH'
+const FETCH_SUCCESS = 'FILMS_FETCH_SUCCESS'
+const FETCH_FAILURE = 'FILMS_FETCH_FAILURE'
+const RESET = 'FILMS_RESET'
+
+function fetch(year) {
+    return {
+        type: FETCH,
+        payload: fetch_films(year)
+    };
+}
+
+function fetchSuccess(films) {
+    return {
+        type: FETCH_SUCCESS,
+        payload: films
+    };
+}
+
+function fetchFailure(error) {
+    return {
+        type: FETCH_FAILURE,
+        payload: error
+    };
+}
+
+
+//------------------------------------------------------------------------------
+// Container
+
+const mapStateToProps = state => {
+    return {
+        films: state.films.list
     }
 }
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetch: year => {
+            dispatch(fetch(year)).payload
+                .then(data => {
+                    dispatch(fetchSuccess(data))
+                    app.update_sticky() // Horrible hack!!
+                })
+                .catch(err => dispatch(fetchFailure(err)))
+        }
+    }
+}
+
+const Films = connect(mapStateToProps, mapDispatchToProps)(FilmPicks)
+
+
+//------------------------------------------------------------------------------
+// Reducer
+
+const INITIAL_STATE = {list: {data: [], error: null, loading: false}}
+
+function reducer(state=INITIAL_STATE, action) {
+    switch(action.type) {
+        case FETCH:
+            // start fetching data and set loading = true
+            return {...state, list: {data: [], error: null, loading: true}}
+
+        case FETCH_SUCCESS:
+            // return data and make loading = false
+            return {...state, list: {data: action.payload, error:null, loading: false}}
+
+        case FETCH_FAILURE:
+            // return error and make loading = false
+            //let error = action.payload || {message: action.payload.message}; //2nd one is network or server down errors
+            return {...state, list: {data: [], error: action.payload, loading: false}}
+
+        case RESET:
+            // reset data to initial state
+            return {...state, list: {data: [], error: null, loading: false}}
+
+        default:
+            return state;
+    }
+}
+
 
 //------------------------------------------------------------------------------
 
 export default function(app) {
-    app.menu.push({ident:'film-pick', text:'Film Picks', href:"/film-pick/2018", sub:[
+    app.add_route('/film-pick/:year', FilmPickPage)
+
+    app.add_nav({ident:'film-pick', text:'Film Picks', href:"/film-pick/2018", sub:[
         {href:"/film-pick/2016", text:"2016", ident:'2016'},
         {href:"/film-pick/2017", text:"2017", ident:'2017'},
         {href:"/film-pick/2018", text:"2018", ident:'2018'},
     ]})
 
-    app.add_route('/film-pick/:year', context => {
-        app.render(<FilmPickPage {...{app, context}} title={"Martin's Film Picks - "+context.params.year} date="2018-03-03" ident="film-pick"/>)
-    })
-
     app.redirect('/film-2016', '/film-pick/2016')
     app.redirect('/film-2017', '/film-pick/2017')
     app.redirect('/film-2018', '/film-pick/2018')
+
+    app.add_reducer('films', reducer)
 }

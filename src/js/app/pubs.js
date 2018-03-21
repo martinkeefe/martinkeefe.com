@@ -358,32 +358,28 @@ function make_popup(pub) {
 
 //------------------------------------------------------------------------------
 
-class PubWatchPage extends NormalPage {
-    main() {
-        return (
-            <Fragment>
-				<h1>Pub Watch</h1>
+const PubWatchPage = props => {
+    return (
+        <NormalPage title="Martin's Pub Watch" date="2018-03-03">
+			<h1>Pub Watch</h1>
 
-				<p>Keeping an eye on the slow extinction of the British pub. Here is a map of
-				   public watering holes, past and present, in Dorking and the
-				   surrounding area.</p>
+			<p>Keeping an eye on the slow extinction of the British pub. Here is a map of
+			   public watering holes, past and present, in Dorking and the
+			   surrounding area.</p>
 
-				<PubWatchMap/>
+			<PubWatchMap/>
 
-				<p>Basic data is from CAMRA's <a href="https://whatpub.com/">WhatPub</a> site.
-				   Some use also made of information from <a href="http://www.closedpubs.co.uk/">The Lost
-				   Pubs Project</a> and <a href="https://pubshistory.com/">UK Pub history</a>.</p>
-            </Fragment>
-        )
-    }
+			<p>Basic data is from CAMRA's <a href="https://whatpub.com/">WhatPub</a> site.
+			   Some use also made of information from <a href="http://www.closedpubs.co.uk/">The Lost
+			   Pubs Project</a> and <a href="https://pubshistory.com/">UK Pub history</a>.</p>
+        </NormalPage>
+    )
 }
 
 //------------------------------------------------------------------------------
 
 export default function(app) {
-	app.menu.push({ident:'pub-watch', text:'Pub Watch', href:"/pub-watch"})
+    app.add_route('/pub-watch', PubWatchPage)
 
-    app.add_route('/pub-watch', context => {
-        app.render(<PubWatchPage {...{app, context}} title="Martin's Pub Watch" date="2018-03-03"/>)
-    })
+	app.add_nav({ident:'pub-watch', text:'Pub Watch', href:"/pub-watch"})
 }
