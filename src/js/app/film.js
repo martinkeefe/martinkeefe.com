@@ -1,57 +1,57 @@
 import React, {Fragment, Component} from 'react'
 import {connect} from 'react-redux'
-import app /* Horrible hack!! */, {NormalPage} from '../app'
+import app /* Horrible hack!! */, {NormalPage} from 'app'
 
 //------------------------------------------------------------------------------
-import AWS from 'aws-sdk'
+//import AWS from 'aws-sdk'
+//
+//AWS.config.update({
+//    region: "eu-west-2",
+//    credentials: new AWS.CognitoIdentityCredentials({
+//        IdentityPoolId: 'eu-west-2:ea25abac-af76-46c7-9ea7-ad61b0a778ac',
+//    })
+//})
+//
+////const admin = "4u('tLedsL"
+////const guest = "6t5L)pf(uM"
+//
+//const CACHE = false
+//
+//// https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html#scan-property
+//async function fetch_films(year) {
+//    return new Promise((resolve, reject) => {
+//        let films = CACHE ? sessionStorage.getItem('films') : null
+//        if (films) {
+//            resolve(JSON.parse(films))
+//        }
+//        else {
+//            const docClient = new AWS.DynamoDB.DocumentClient()
+//            docClient.scan({TableName:'films'}, (err,data) => {
+//                if (err) {
+//                    console.log(err);
+//                    reject(err)
+//                }
+//                else {
+//                    if (CACHE) {
+//                        sessionStorage.setItem('films', JSON.stringify(data.Items))
+//                    }
+//                    resolve(select(data.Items,year))
+//                }
+//            });
+//        }
+//    })
+//}
+//
+//function select(films, year) {
+//    films = films.filter(film => film.date.startsWith(year) && !film.hide)
+//    films.sort((a,b) => {
+//        if (a.date < b.date) return -1;
+//        if (a.date > b.date) return 1;
+//        return 0;
+//    })
+//    return films
+//}
 
-AWS.config.update({
-    region: "eu-west-2",
-    credentials: new AWS.CognitoIdentityCredentials({
-        IdentityPoolId: 'eu-west-2:ea25abac-af76-46c7-9ea7-ad61b0a778ac',
-    })
-})
-
-//const admin = "4u('tLedsL"
-//const guest = "6t5L)pf(uM"
-
-const CACHE = false
-
-// https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html#scan-property
-//async
-function fetch_films(year) {
-    return new Promise((resolve, reject) => {
-        let films = CACHE ? sessionStorage.getItem('films') : null
-        if (films) {
-            resolve(JSON.parse(films))
-        }
-        else {
-            const docClient = new AWS.DynamoDB.DocumentClient()
-            docClient.scan({TableName:'films'}, (err,data) => {
-                if (err) {
-                    console.log(err);
-                    reject(err)
-                }
-                else {
-                    if (CACHE) {
-                        sessionStorage.setItem('films', JSON.stringify(data.Items))
-                    }
-                    resolve(select(data.Items,year))
-                }
-            });
-        }
-    })
-}
-
-function select(films, year) {
-    films = films.filter(film => film.date.startsWith(year))
-    films.sort((a,b) => {
-        if (a.date < b.date) return -1;
-        if (a.date > b.date) return 1;
-        return 0;
-    })
-    return films
-}
 
 //------------------------------------------------------------------------------
 
@@ -76,29 +76,28 @@ const COLOR = {
     hate: "#D00",
 }
 
-function rate(seen) {
-    return (
-        <svg width="14" height="19">
-            <rect width="14" height="14" style={{fill:COLOR[seen]}}/>
-        </svg>
-    )
-}
-
-function SP(key) {
-    return <Fragment key={key}> </Fragment>
-}
-
 //------------------------------------------------------------------------------
+
+function Rate({seen}) {
+    if (seen) {
+        return (
+            <svg width="14" height="19">
+                <rect width="14" height="14" style={{fill:COLOR[seen]}}/>
+            </svg>
+        )
+    }
+
+    return null
+}
+
+function ImgLink({kind,href,...props}) {
+    return <a target="_blank" href={href}><img src={IMG[kind]} style={{paddingRight: '4px'}} {...props}/></a>
+}
 
 class FilmPicks extends Component {
     componentWillMount() {
         this.props.fetch(this.props.year)
     }
-
-    //compponentDidUpdate() {
-    //    console.log('FilmPicks','compponentDidUpdate')
-    //    app.page.update()
-    //}
 
     render() {
         const {data, loading, error} = this.props.films
@@ -110,37 +109,41 @@ class FilmPicks extends Component {
             return <div className="alert alert-danger">Error: {error.message}</div>
         }
 
-        const picks = data.map(film => {
+        let updated = ''
+        data.forEach(film => {
+            if (film.created && film.created > updated) {
+                updated = film.created
+            }
+            if (film.updated && film.updated > updated) {
+                updated = film.updated
+            }
+        })
+
+        const picks = data.filter(film => !film.hide).map(film => {
             const date = film.date.split('-');
             const poster = film.poster ? <img src={film.poster} width="96" height="142"/> : null;
             const links = [];
 
-            links.push(<a key="imdb" href={'http://www.imdb.com/title/'+film.id}><img src={IMG.imdb} height="16"/></a>);
-            links.push(SP("imdb_"))
+            links.push(<ImgLink key="imdb" kind="imdb" href={'http://www.imdb.com/title/'+film.id} height="16"/>);
 
             if (film.youtube) {
-                links.push(<a key="youtube" href={'https://www.youtube.com/watch?v='+film.youtube}><img src={IMG.youtube} height="16"/></a>);
-                links.push(SP("youtube_"))
+                links.push(<ImgLink key="youtube" kind="youtube" href={'https://www.youtube.com/watch?v='+film.youtube} height="16"/>);
             }
             if (film.tomato) {
-                links.push(<a key="tomato" href={'https://www.rottentomatoes.com/m/'+film.tomato}><img src={IMG.tomato} height="16"/></a>);
-                links.push(SP("tomato_"))
+                links.push(<ImgLink key="tomato" kind="tomato" href={'https://www.rottentomatoes.com/m/'+film.tomato} height="16"/>);
             }
             if (film.zooqle) {
-                links.push(<a key="zooqle" href={'https://zooqle.com/movie/'+film.zooqle+'.html'}><img src={IMG.zooqle} height="18"/></a>);
-                links.push(SP("zooqle_"))
+                links.push(<ImgLink key="zooqle" kind="zooqle" href={'https://zooqle.com/movie/'+film.zooqle+'.html'} height="18"/>);
             }
             if (film.netflix) {
-                links.push(<a key="netflix" href={'http://unogs.com/video/?v='+film.netflix}><img src={IMG.netflix} width="46"/></a>);
-                links.push(SP("netflix_"))
+                links.push(<ImgLink key="netflix" kind="netflix" href={'http://unogs.com/video/?v='+film.netflix} width="46"/>);
             }
             //if (film.paradiso) {
             //    links.push(`<a href="https://www.cinemaparadiso.co.uk/rentals/${film.paradiso}.html"><img src="${IMG.paradiso}" width="46"></a>`);
             //}
 
-            const seen = film.seen ? rate(film.seen) : null;
             let title = <Fragment>
-                    <div style={{float:'right'}}>{film.series} {seen}</div>
+                    <div style={{float:'right'}}>{film.series} <Rate seen={film.seen}/></div>
                     <a href={film.link}><i>{film.title}</i></a>
                 </Fragment>
 
@@ -158,18 +161,22 @@ class FilmPicks extends Component {
 
             return (
                 <tr key={film.id}>
-                    <td style={{width:'70px'}}>{MONTH[Number(date[1])-1]}&nbsp;{Number(date[2])}<br/>{links}</td>
+                    <td style={{width:'74px'}}>{MONTH[Number(date[1])-1]}&nbsp;{Number(date[2])}<br/>{links}</td>
                     <td>{poster}</td>
                     <td>{title}<p className="small" dangerouslySetInnerHTML={{__html: film.text || ''}}></p>{note}</td>
                 </tr>);
         });
 
         return (
-            <table className="films">
-                <tbody>
-                    {picks}
-                </tbody>
-            </table>
+            <Fragment>
+
+                <p>{updated ? `Last data update: ${updated.substr(0,10)}` : null}</p>
+                <table className="films">
+                    <tbody>
+                        {picks}
+                    </tbody>
+                </table>
+            </Fragment>
         )
     }
 }
@@ -177,112 +184,146 @@ class FilmPicks extends Component {
 
 //------------------------------------------------------------------------------
 
-const FilmPickPage = props => {
-    return (
-        <NormalPage title={"Martin's Film Picks - "+props.match.params.year} date="2018-03-03" ident="film-pick">
-            <h1>{props.match.params.year} Film Picks</h1>
-            <p>This is my selection of films I might want to watch. It is <i>not</i> any sort of value judgment or recommendation. Here is a key to
-                    the links in the left-hand column:</p>
-            <dl className="films">
-                <dt><img src={IMG.imdb} height="16"/></dt>
-                <dd>Goes to film's page at IMDB.</dd>
-                <dt><img src={IMG.youtube} height="16"/></dt>
-                <dd>Goes to a trailer on YouTube.</dd>
-                <dt><img src={IMG.tomato} height="16"/></dt>
-                <dd>Goes to film’s page at Rotten Tomatoes.</dd>
-                <dt><img src={IMG.netflix} width="46"/></dt>
-                <dd>Goes to a site that tell’s you in which counties the film is available on Netflix.</dd>
-                <dt><img src={IMG.zooqle} height="18"/></dt>
-                <dd>Goes to a site listing bitTorrents of the film. Caution: You should know what you're doing if you use this. <i>Never</i> use the direct download links!</dd>
-            </dl>
-            <p>Once I've seen a film I record my reaction like this: {rate('love')}=love, {rate('like')}=like, {rate('ok')}=ok, {rate('dislike')}=dislike, {rate('hate')}=hate.
-                 Sometimes I add a note about my reaction.</p>
-            <Films key={props.match.params.year} year={props.match.params.year}/>
-        </NormalPage>
-    )
+class FilmPickPage extends Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            help: false,
+        }
+    }
+
+    render() {
+        const year = this.props.match.params.year
+
+        const style = {
+            help: {
+                btn: {
+                    float:'right',
+                    color: 'rgb(54,50,65)',
+                    background: 'rgb(173,167,228)',
+                    padding: '2px 6px',
+                    fontSize: '13px',
+                    fontFamily: 'Lato, sans-serif',
+                    cursor: 'pointer',
+                    textTransform: 'uppercase',
+                    borderRadius: '9px',
+                },
+                text: {
+                    padding: '2px 6px',
+                    background: 'rgb(64,60,75)',
+                    borderRadius: '9px',
+                }
+            }
+        }
+
+        return (
+            <NormalPage title={"Martin's Film Picks - "+year} date="2018-05-19" ident="film-pick">
+                <h1>{year} Film Picks</h1>
+                <p>This is my selection of films I might want to watch. It is <i>not</i> any sort of value judgment or recommendation. </p>
+                <span style={style.help.btn} onClick={e => this.setState({help: !this.state.help})}>{this.state.help ? 'Hide' : 'Show'} Help</span>
+
+                {this.state.help
+                    ? <div style={style.help.text} className="help">
+                    <p>Here is a key to the links in the left-hand column:</p>
+                    <dl className="films">
+                        <dt><img src={IMG.imdb} height="16"/></dt>
+                        <dd>Goes to film's page at IMDB.</dd>
+                        <dt><img src={IMG.youtube} height="16"/></dt>
+                        <dd>Goes to a trailer on YouTube.</dd>
+                        <dt><img src={IMG.tomato} height="16"/></dt>
+                        <dd>Goes to film’s page at Rotten Tomatoes.</dd>
+                        <dt><img src={IMG.netflix} width="46"/></dt>
+                        <dd>Goes to a site that tell’s you in which counties the film is available on Netflix.</dd>
+                        <dt><img src={IMG.zooqle} height="18"/></dt>
+                        <dd>Goes to a site listing bitTorrents of the film. Caution: You should know what you're doing if you use this. <i>Never</i> use the direct download links!</dd>
+                    </dl>
+                    <p>Once I've seen a film I record my reaction like this: <Rate seen="love"/>=love, <Rate seen="like"/>=like, <Rate seen="ok"/>=ok, <Rate seen="dislike"/>=dislike, <Rate seen="hate"/>=hate.
+                         Sometimes I add a note about my reaction.</p>
+                    </div>
+                    : null}
+
+                <Films key={year} year={year}/>
+            </NormalPage>
+        )
+    }
 }
 
 //------------------------------------------------------------------------------
 // Actions
 
-const FETCH = 'FILMS_FETCH'
-const FETCH_SUCCESS = 'FILMS_FETCH_SUCCESS'
-const FETCH_FAILURE = 'FILMS_FETCH_FAILURE'
-const RESET = 'FILMS_RESET'
-
-function fetch(year) {
-    return {
-        type: FETCH,
-        payload: fetch_films(year)
-    };
+function get(path) {
+    return fetch('https://uamrc1iiak.execute-api.eu-west-2.amazonaws.com/dev/'+path)
+        .then(response => {
+            if (response.ok) {
+                return response.json()
+            }
+            throw new Error('Network response was not ok.')
+        })
 }
 
-function fetchSuccess(films) {
+function films_fetch(year) {
+    console.log(`films_fetch(${year})`)
     return {
-        type: FETCH_SUCCESS,
-        payload: films
-    };
+        type: 'FILMS_FETCH',
+        payload: new Promise((resolve, reject) => {
+            get('films/'+year)
+                .then(response => resolve(response.Items))
+                .catch(e => reject(e))
+        })}
 }
 
-function fetchFailure(error) {
-    return {
-        type: FETCH_FAILURE,
-        payload: error
-    };
+function films_fetchSuccess(films) {
+    console.log(`films_fetchSuccess(${films.length})`)
+    return {type: 'FILMS_FETCH_SUCCESS', films}
+}
+
+function films_fetchFailure(error) {
+    console.log(`films_fetchFailure(${error})`)
+    return {type: 'FILMS_FETCH_FAILURE', error}
 }
 
 
 //------------------------------------------------------------------------------
 // Container
 
-const mapStateToProps = state => {
+const state2props = state => {
     return {
         films: state.films.list
     }
 }
 
-const mapDispatchToProps = dispatch => {
+const dispatch2props = dispatch => {
     return {
         fetch: year => {
-            dispatch(fetch(year)).payload
+            //console.log('films',`dispatch(fetch(${year}))`)
+            dispatch(films_fetch(year)).payload
                 .then(data => {
-                    dispatch(fetchSuccess(data))
+                    dispatch(films_fetchSuccess(data))
                     app.update_sticky() // Horrible hack!!
                 })
-                .catch(err => dispatch(fetchFailure(err)))
+                .catch(err => dispatch(films_fetchFailure(err)))
         }
     }
 }
 
-const Films = connect(mapStateToProps, mapDispatchToProps)(FilmPicks)
+const Films = connect(state2props, dispatch2props)(FilmPicks)
 
 
 //------------------------------------------------------------------------------
 // Reducer
 
-const INITIAL_STATE = {list: {data: [], error: null, loading: false}}
+const INITIAL_STATE = {
+    list: {data: [], error: null, loading: false}
+}
 
 function reducer(state=INITIAL_STATE, action) {
     switch(action.type) {
-        case FETCH:
-            // start fetching data and set loading = true
-            return {...state, list: {data: [], error: null, loading: true}}
-
-        case FETCH_SUCCESS:
-            // return data and make loading = false
-            return {...state, list: {data: action.payload, error:null, loading: false}}
-
-        case FETCH_FAILURE:
-            // return error and make loading = false
-            //let error = action.payload || {message: action.payload.message}; //2nd one is network or server down errors
-            return {...state, list: {data: [], error: action.payload, loading: false}}
-
-        case RESET:
-            // reset data to initial state
-            return {...state, list: {data: [], error: null, loading: false}}
-
-        default:
-            return state;
+        case 'FILMS_FETCH':         return {...state, list: {data: [], error: null, loading: true}}
+        case 'FILMS_FETCH_SUCCESS': return {...state, list: {data: action.films, error:null, loading: false}}
+        case 'FILMS_FETCH_FAILURE': return {...state, list: {data: [], error: action.error, loading: false}}
+        case 'FILMS_RESET':         return {...state, list: {data: [], error: null, loading: false}}
+        default: return state;
     }
 }
 

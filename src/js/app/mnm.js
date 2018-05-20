@@ -1,5 +1,5 @@
 import React, {Fragment,Component} from 'react'
-import {NormalPage} from '../app'
+import {NormalPage} from 'app'
 
 const MNMS = [
 	{num:'08', title:"Claudia’s Birthday", when:'September 2008', date:'2016-09-17'},
@@ -29,7 +29,7 @@ function s3_src(mnm,i,ext) {
 
 const MondayPage = props => {
 	const mnm = MNMS.find(val => val.num == props.match.params.mnm)
-	const recs = require('../../data/mnm/mnm'+mnm.num+'.csv')
+	const recs = require('data/mnm/mnm'+mnm.num+'.csv')
 
 	return (
 		<NormalPage title={"Monday Night Martin - "+mnm.title} date={mnm.date} ident="mnm">
@@ -64,8 +64,8 @@ class PlayList extends Component {
 
 			return <PlayListItem key={trk_num} list={this} mnm={this.props.mnm} num={trk_num} rec={rec} src={src} img={img} volume={this.volume} muted={this.muted}
 				active={i == this.state.index}
-				onEnded={() => this.onEnded()}
-				onVolumeChange={e => this.onVolumeChange(e)}
+				onEnded={this.onEnded}
+				onVolumeChange={this.onVolumeChange}
 				onClick={e => this.onClick(e,i)}/>
 		})
 
@@ -76,18 +76,18 @@ class PlayList extends Component {
 		)
 	}
 
-	onEnded() {
+	onEnded = () => {
 		this.setState((prevState, props) => ({index: prevState.index + 1}))
+	}
+
+	onVolumeChange = e => {
+		this.volume = e.target.volume
+		this.muted = e.target.muted
 	}
 
 	onClick(e,i) {
 		e.preventDefault()
 		this.setState({index: i})
-	}
-
-	onVolumeChange(e) {
-		this.volume = e.target.volume
-		this.muted = e.target.muted
 	}
 }
 
@@ -140,9 +140,8 @@ class PlayListItem extends Component {
 export default function(app) {
 	app.add_route('/mnm/:mnm', MondayPage)
 
-	app.add_nav({ident:'mnm', text:'Monday Night Martin', href:"/mnm/09", sub:MNMS.map(mnm => {
-			return {href:"/mnm/"+mnm.num, text:`#${mnm.num}: ${mnm.title}`, ident:mnm.num}
-		})
+	app.add_nav({ident:'mnm', text:'Monday Night Martin', href:"/mnm/09", sub:
+		MNMS.map(mnm => ({href:"/mnm/"+mnm.num, text:`#${mnm.num}: ${mnm.title}`, ident:mnm.num}))
 	})
 
 	MNMS.forEach(mnm => {

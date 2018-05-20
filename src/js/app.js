@@ -1,7 +1,7 @@
 import React, {Fragment, Component} from 'react'
 import ReactDOM from 'react-dom'
 
-import {createStore, combineReducers, applyMiddleware} from 'redux'
+import {createStore, combineReducers, applyMiddleware, compose} from 'redux'
 import {Provider} from 'react-redux'
 
 import createHistory from 'history/createBrowserHistory'
@@ -13,7 +13,7 @@ import {ConnectedRouter, routerReducer, routerMiddleware} from 'react-router-red
 
 
 //import page from 'page'
-import StickySidebar from './lib/sticky-sidebar'
+import StickySidebar from 'lib/sticky-sidebar'
 
 
 const app = new (class {
@@ -38,8 +38,12 @@ const app = new (class {
 		this.routes.push({path, component, exact})
 	}
 
-	add_reducer(key,value) {
-		this.reducers[key] = value
+	add_reducer(key, reducer) {
+		this.reducers[key] = reducer
+	}
+
+	add_reducers(key, reducers) {
+		this.reducers[key] = combineReducers(reducers)
 	}
 
 	// https://github.com/ReactTraining/react-router/issues/5138
@@ -56,12 +60,16 @@ const app = new (class {
 
 		// Add the reducer to your store on the `router` key
 		// Also apply our middleware for navigating
+		const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 		const store = createStore(
 			combineReducers({
 		    	...this.reducers,
 		    	router: routerReducer
 		  	}),
-		  	applyMiddleware(middleware)
+			/* preloadedState, */
+			composeEnhancers(
+		  		applyMiddleware(middleware)
+		  	)
 		)
 
 		ReactDOM.render(
@@ -161,7 +169,8 @@ export class NormalPage extends Component {
 			        containerSelector: '#root',
 			        innerWrapperSelector: '.sidebar__inner',
 			        topSpacing: 20,
-			        bottomSpacing: 20
+			        bottomSpacing: 20,
+			        minWidth: 700,
 			    });
 			//console.log('new StickySidebar')
 		}

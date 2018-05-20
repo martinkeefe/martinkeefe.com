@@ -1,6 +1,6 @@
 import React, {Fragment, Component} from 'react'
-import {NormalPage} from '../app'
-import {Master, Pressure, Pause, quart, quarts} from './mafc-utils'
+import {NormalPage} from 'app'
+import {Master, Pressure, Pause, quart, quarts} from 'app/mafc-utils'
 
 
 const MAFC = {
@@ -49,22 +49,18 @@ const MAFC = {
 }
 
 
-class MAFCPage extends NormalPage {
-	main() {
-		return (
-			<Fragment>
-				<h1>French Cooking</h1>
-				<p>All text on this page is derived from the 1961 classic <i>Mastering the Art of
-				French Cooking</i> by Julia Child, Louisette Bertholle, and Simone Beck.</p>
-				{MAFC[this.props.context.params.id]}
-			</Fragment>
-		)
-	}
+const MAFCPage = props => {
+	return (
+		<NormalPage title={"Martin's French Cooking"} date="2018-03-10" ident="mafc">
+			<h1>French Cooking</h1>
+			<p>All text on this page is derived from the 1961 classic <i>Mastering the Art of
+			French Cooking</i> by Julia Child, Louisette Bertholle, and Simone Beck.</p>
+			{MAFC[props.match.params.id]}
+		</NormalPage>
+	)
 }
 
 
 export default function(app) {
-    app.add_route('/mafc/:id', context => {
-        app.render(<MAFCPage {...{app, context}} title={"Martin's French Cooking"} date="2018-03-10" ident="mafc"/>)
-    })
+    app.add_route('/mafc/:id', MAFCPage)
 }

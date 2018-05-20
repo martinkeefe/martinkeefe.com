@@ -18,12 +18,14 @@ module.exports = {
             'react-redux',
             'react-router-redux',
             'history',
-
             './src/js/lib/sticky-sidebar',
+
             'leaflet',
+            'react-leaflet',
     		'./src/js/lib/L.LabelTextCollision',
     		'./src/js/lib/leaflet-beautify-marker-icon',
             //'./src/js/lib/L.OSGraticule',
+
             'aws-sdk',
             'amazon-cognito-identity-js',
             //'aws-amplify',
@@ -38,7 +40,7 @@ module.exports = {
 		path: path.resolve(__dirname, 'dist')
 	},
 	resolve: {
-		extensions: ['.js'],
+        modules: [path.resolve(__dirname, "src/js"), path.resolve(__dirname, "src"), "node_modules"],
 		alias: {
             //'three/TrackballControls': path.join(__dirname, 'node_modules/three/examples/js/controls/TrackballControls.js'),
             //'three/DragControls': path.join(__dirname, 'node_modules/three/examples/js/controls/DragControls.js'),
@@ -48,12 +50,12 @@ module.exports = {
 	module: {
 		rules: [
 			//{test: /\.(css|sass|scss)$/, loader: ExtractTextPlugin.extract('style', 'css?sourceMap!sass?sourceMap')},
-			{test: /\.(js|jsx)$/, exclude: /node_modules/, use: ['babel-loader']},
+			{test: /\.(js|jsx)$/, exclude: /node_modules/, use: 'babel-loader'},
        		{test: /\.css$/, use: ['style-loader', 'css-loader']},
-       		{test: /\.(png|svg|jpg|gif)$/, use: ['file-loader']},
-       		{test: /\.(woff|woff2|eot|ttf|otf)$/, use: ['file-loader']},
-			{test: /\.html$/, use: ['html-loader']},
-			{test: /\.(c|d|t)sv$/, use: ['dsv-loader?delimiter=;']},
+       		{test: /\.(png|svg|jpg|gif)$/, use: {loader: 'url-loader', options: {limit: 4096}}},
+       		{test: /\.(woff|woff2|eot|ttf|otf)$/, use: 'file-loader'},
+			{test: /\.html$/, use: 'html-loader'},
+			{test: /\.(c|d|t)sv$/, use: 'dsv-loader?delimiter=;'},
 		],
 	},
 	plugins: [

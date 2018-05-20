@@ -1,5 +1,5 @@
 import React, {Fragment} from 'react'
-import {NormalPage} from '../app'
+import {NormalPage} from 'app'
 //import Amplify, {Auth} from "aws-amplify"
 
 import {CognitoUserPool, CognitoUser, AuthenticationDetails} from 'amazon-cognito-identity-js'

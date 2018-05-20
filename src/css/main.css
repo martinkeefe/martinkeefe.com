@@ -231,7 +231,7 @@ div.update span {
 .playlist .item img {
 	width: 128px;
 	height: 128px;
-	flex: 1;
+	-flex: 1;
 }
 .playlist .item .data {
 	flex: 2;
@@ -469,4 +469,18 @@ form label span {
 	width: 100px;
     display: inline-block;
     text-align: right;
+}
+
+
+.my-div-icon {
+	text-align: center;
+	color: black;
+}
+
+
+.help :first-child {
+	margin-top: 0;
+}
+.help :last-child {
+	margin-bottom: 0;
 }
