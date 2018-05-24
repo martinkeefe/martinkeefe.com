@@ -26,8 +26,8 @@ module.exports = {
     		'./src/js/lib/leaflet-beautify-marker-icon',
             //'./src/js/lib/L.OSGraticule',
 
-            'aws-sdk',
-            'amazon-cognito-identity-js',
+            //'aws-sdk',
+            //'amazon-cognito-identity-js',
             //'aws-amplify',
             'babel-polyfill',
             //'three',

@@ -87,7 +87,7 @@ hr {
 
 /*============================================================================*/
 
-#root {
+/*#root {
 	-max-width: 1000px;
 	-margin: 0 auto;
 	-display: flex;
@@ -97,12 +97,15 @@ hr {
 nav.side {
   -visibility: hidden;
   -width: 0;
-}
+}*/
 nav.side img {
     visibility: hidden;
 	-width: 180px;
 	height: 0;
 	margin: 0;
+}
+nav.side span {
+	visibility: visible;
 }
 /*nav.side ul {
 	padding-left: 20px;
@@ -169,6 +172,9 @@ div.body {
     	visibility: visible;
 		width: 180px;
 		height: 180px;
+    }
+    nav.side span {
+    	visibility: hidden;
     }
 
 	nav.side ul {
@@ -444,6 +450,8 @@ table.gui td {
 	margin: 0 0 0 68px;
 	padding: 0 0 0.5em 0;
 }
+
+/*============================================================================*/
 
 ul.recipe {
 	padding-left: 20px;
