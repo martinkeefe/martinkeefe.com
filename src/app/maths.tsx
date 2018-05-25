@@ -1,5 +1,5 @@
-import React from 'react'
-import { NormalPage } from 'app'
+import * as React from 'react'
+import { NormalPage } from '../app'
 
 
 const MathLinkPage = () => {

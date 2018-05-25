@@ -1,4 +1,4 @@
 {
   "presets": ["stage-3"],
-  "plugins": ["transform-react-jsx", "transform-class-properties", "transform-flow-strip-types"]
+  "plugins": ["transform-react-jsx", "transform-class-properties"]
 }

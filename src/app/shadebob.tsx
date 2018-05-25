@@ -1,11 +1,9 @@
-// @flow
-
-import React, { Fragment } from 'react'
+import * as React from 'react'
 
 type Props = {}
 
 export default class ShadeBob extends React.Component<Props> {
-    canvas : Object
+    canvas : React.RefObject<HTMLCanvasElement>
 
     constructor(props : Props) {
         super(props)
@@ -14,10 +12,10 @@ export default class ShadeBob extends React.Component<Props> {
 
     render() {
         return (
-            <Fragment>
+            <React.Fragment>
                 <canvas style={{ width: '100%' }} onClick={reset} ref={this.canvas}></canvas>
                 <p style={{ textAlign: 'center' }}>Tap or hit any key for a new pattern.</p>
-            </Fragment>
+            </React.Fragment>
         )
     }
 

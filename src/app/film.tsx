@@ -1,22 +1,22 @@
-import React, { Fragment, Component } from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
 import { connect } from 'react-redux'
-import app /* Horrible hack!! */, { NormalPage } from 'app'
+import app /* Horrible hack!! */, { NormalPage } from '../app'
+import { FloatProperty, CursorProperty, TextTransformProperty } from 'csstype';
 
 //------------------------------------------------------------------------------
 
 const MONTH = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const IMG = {
-    imdb: require('../../img/icons8-imdb-48.png'),
-    youtube: require('../../img/icons8-play-button-48.png'),
-    tomato: require('../../img/icons8-tomato-48.png'),
-    netflix: require('../../img/icons8-netflix-48.png'),
-    zooqle: require('../../img/zq-logo.png'),
-    //paradiso: require('../../img/paradiso.png'),
-    fr: require('../../img/icons8-france-48.png'),
-    de: require('../../img/icons8-germany-48.png'),
-    it: require('../../img/icons8-italy-48.png'),
-    jp: require('../../img/icons8-japan-48.png'),
+    imdb: require('img/icons8-imdb-48.png'),
+    youtube: require('img/icons8-play-button-48.png'),
+    tomato: require('img/icons8-tomato-48.png'),
+    netflix: require('img/icons8-netflix-48.png'),
+    zooqle: require('img/zq-logo.png'),
+    //paradiso: require('img/paradiso.png'),
+    fr: require('img/icons8-france-48.png'),
+    de: require('img/icons8-germany-48.png'),
+    it: require('img/icons8-italy-48.png'),
+    jp: require('img/icons8-japan-48.png'),
 }
 const COLOR = {
     love: '#0FB',
@@ -28,11 +28,15 @@ const COLOR = {
 
 //------------------------------------------------------------------------------
 
-function Rate({ seen }) {
-    if (seen) {
+interface RateProps {
+    seen? : string,
+}
+
+function Rate(props: RateProps) {
+    if (props.seen) {
         return (
             <svg width="14" height="19">
-                <rect width="14" height="14" style={{ fill: COLOR[seen] }} />
+                <rect width="14" height="14" style={{ fill: COLOR[props.seen] }} />
             </svg>
         )
     }
@@ -40,25 +44,49 @@ function Rate({ seen }) {
     return null
 }
 
-Rate.propTypes = {
-    seen: PropTypes.string.isRequired,
-}
 
 function ImgLink({ kind, href, ...props }) {
     return <a target="_blank" href={href}><img src={IMG[kind]} style={{ paddingRight: '4px' }} {...props} /></a>
 }
 
-ImgLink.propTypes = {
-    kind: PropTypes.string.isRequired,
-    href: PropTypes.string.isRequired,
+// ImgLink.propTypes = {
+//     kind: PropTypes.string.isRequired,
+//     href: PropTypes.string.isRequired,
+// }
+
+interface Film {
+    id: string,
+    created?: string,
+    updated?: string,
+    hide?: boolean,
+    date: string,
+    title: string,
+    poster?: string,
+    youtube?: string,
+    tomato?: string,
+    zooqle?: string,
+    netflix?: string,
+    seen?: string,
+    series?: string,
+    link: string,
+    lang?: string,
+    text?: string,
+    note?: string,
 }
 
-class FilmPicks extends Component {
-    static propTypes = {
-        year: PropTypes.string.isRequired,
-        fetch: PropTypes.func.isRequired,
-        films: PropTypes.object.isRequired,
-    }
+interface FilmsState {
+    data: Film[],
+    loading: boolean,
+    error: any
+}
+interface FilmPicksProps {
+    year: string,
+    fetch: (string) => void,
+    films: FilmsState,
+}
+
+class FilmPicks extends React.Component<FilmPicksProps> {
+    table: React.RefObject<HTMLTableElement> = React.createRef()
 
     constructor(props) {
         super(props)
@@ -108,18 +136,18 @@ class FilmPicks extends Component {
             //    links.push(`<a href="https://www.cinemaparadiso.co.uk/rentals/${film.paradiso}.html"><img src="${IMG.paradiso}" width="46"></a>`);
             //}
 
-            let title = <Fragment>
+            let title = <React.Fragment>
                 <div style={{ float: 'right' }}>{film.series} <Rate seen={film.seen} /></div>
                 <a href={film.link}><i>{film.title}</i></a>
-            </Fragment>
+            </React.Fragment>
 
 
             if (film.lang) {
                 if (film.lang === 'jp') {
-                    title = <Fragment>{title} <img style={{ verticalAlign: 'baseline', paddingLeft: '5px' }} src={IMG.jp} height="13" /> {film[film.lang + '_title'] || ''}</Fragment>
+                    title = <React.Fragment>{title} <img style={{ verticalAlign: 'baseline', paddingLeft: '5px' }} src={IMG.jp} height="13" /> {film[film.lang + '_title'] || ''}</React.Fragment>
                 }
                 else {
-                    title = <Fragment>{title} <img style={{ verticalAlign: 'baseline', paddingLeft: '5px' }} src={IMG[film.lang]} height="13" /> <i>{film[film.lang + '_title'] || ''}</i></Fragment>
+                    title = <React.Fragment>{title} <img style={{ verticalAlign: 'baseline', paddingLeft: '5px' }} src={IMG[film.lang]} height="13" /> <i>{film[film.lang + '_title'] || ''}</i></React.Fragment>
                 }
             }
 
@@ -142,14 +170,14 @@ class FilmPicks extends Component {
         })
 
         return (
-            <Fragment>
+            <React.Fragment>
                 <p>{updated ? `Last data update: ${updated.substr(0, 10)}` : null}</p>
                 <table ref={this.table} className="films">
                     <tbody>
                         {picks}
                     </tbody>
                 </table>
-            </Fragment>
+            </React.Fragment>
         )
     }
 }
@@ -157,11 +185,14 @@ class FilmPicks extends Component {
 
 //------------------------------------------------------------------------------
 
-class FilmPickPage extends Component {
-    static propTypes = {
-        match: PropTypes.object.isRequired,
-    }
+interface PageProps {
+    match: {params: {year: string}},
+}
+interface PageState {
+    help: boolean,
+}
 
+class FilmPickPage extends React.Component<PageProps,PageState> {
     constructor(props) {
         super(props)
 
@@ -176,14 +207,14 @@ class FilmPickPage extends Component {
         const style = {
             help: {
                 btn: {
-                    float: 'right',
+                    float: 'right' as FloatProperty,
                     color: 'rgb(54,50,65)',
                     background: 'rgb(173,167,228)',
                     padding: '2px 6px',
                     fontSize: '13px',
                     fontFamily: 'Lato, sans-serif',
-                    cursor: 'pointer',
-                    textTransform: 'uppercase',
+                    cursor: 'pointer' as CursorProperty,
+                    textTransform: 'uppercase' as TextTransformProperty,
                     borderRadius: '9px',
                     marginLeft: '6px',
                 },
@@ -259,6 +290,14 @@ function films_fetchFailure(error) {
 //------------------------------------------------------------------------------
 // Container
 
+interface StateFromProps {
+    films: FilmsState,
+}
+interface DispatchFromProps {
+    fetch: (string) => void,
+}
+
+
 const state2props = state => {
     return {
         films: state.films.list
@@ -279,7 +318,7 @@ const dispatch2props = dispatch => {
     }
 }
 
-const Films = connect(state2props, dispatch2props)(FilmPicks)
+const Films = connect<StateFromProps, DispatchFromProps, { year: string }>(state2props, dispatch2props)(FilmPicks)
 
 
 //------------------------------------------------------------------------------

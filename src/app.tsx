@@ -1,10 +1,7 @@
-// @flow
-
 import * as React from 'react'
-import ReactDOM from 'react-dom'
-import PropTypes from 'prop-types'
+import * as ReactDOM from 'react-dom'
 
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
+import { createStore, combineReducers, applyMiddleware, compose, Reducer, ReducersMapObject } from 'redux'
 import { Provider } from 'react-redux'
 
 import createHistory from 'history/createBrowserHistory'
@@ -16,44 +13,41 @@ import { ConnectedRouter, routerReducer, routerMiddleware } from 'react-router-r
 
 import StickySidebar from 'sticky-sidebar'
 
-type State = Object
-type Action = Object
-type Reducer = (State, Action) => State
-
+//------------------------------------------------------------------------------
 
 export class App {
-    el : Element
+    el: Element
     routes = []
     menu = []
     reducers = {}
     page = null
 
-    constructor(elem_id : string = 'root') {
-        this.el = ((document.getElementById(elem_id) || document.body : any) : Element)
+    constructor(elem_id: string = 'root') {
+        this.el = ((document.getElementById(elem_id) || document.body as any) as Element)
     }
 
-    use(imp : Object) {
+    use(imp: {default: (app: App) => void}) {
         imp.default(this)
     }
 
-    add_nav(nav : Object) {
+    add_nav(nav: Object) {
         this.menu.push(nav)
     }
 
-    add_route(path : string, component : React.ComponentType<Object>, exact : bool = false) {
+    add_route(path: string, component: React.ComponentType<Object>, exact: boolean = false) {
         this.routes.push({ path, component, exact })
     }
 
-    add_reducer(key : string, reducer : Reducer) {
+    add_reducer<S>(key: string, reducer: Reducer<S>) {
         this.reducers[key] = reducer
     }
 
-    add_reducers(key : string, reducers : Array<Reducer>) {
-        this.reducers[key] = combineReducers(reducers) 
+    add_reducers(key: string, reducers: ReducersMapObject) {
+        this.reducers[key] = combineReducers(reducers)
     }
 
     // https://github.com/ReactTraining/react-router/issues/5138
-    redirect(path1 : string, path2 : string) {
+    redirect(path1: string, path2: string) {
         this.add_route(path1, () => <Redirect to={path2} />)
     }
 
@@ -66,7 +60,7 @@ export class App {
 
         // Add the reducer to your store on the `router` key
         // Also apply our middleware for navigating
-        const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+        const composeEnhancers = window['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] || compose
         const store = createStore(
             combineReducers({
                 ...this.reducers,
@@ -83,7 +77,7 @@ export class App {
                 <ConnectedRouter history={history}>
                     {renderRoutes(this.routes)}
                 </ConnectedRouter>
-            </Provider>, 
+            </Provider>,
             this.el
         )
     }
@@ -95,9 +89,12 @@ export class App {
         }
     }
 }
+
 const app = new App()
 
 export default app
+
+//------------------------------------------------------------------------------
 
 function set_title(title) {
     var el = document.getElementsByTagName('title')[0]
@@ -105,22 +102,13 @@ function set_title(title) {
 }
 
 
-//function Link(props) {
-//    if (props.here.props.context.pathname === props.to) {
-//        return props.children
-//    }
-//    else {
-//        return <a href={props.to}>{props.children}</a>
-//    }
-//}
-
-type NavItem = {
-    href : string, 
-    text : string, 
-    ident : string, 
-    sub? : Array<NavItem>
+interface NavItem {
+    href: string,
+    text: string,
+    ident: string,
+    sub?: Array<NavItem>
 }
-type NavProps = {
+interface  NavProps {
     items: Array<NavItem>,
     ident: string,
 }
@@ -142,19 +130,20 @@ class SideNav extends React.Component<NavProps> {
     }
 }
 
+//------------------------------------------------------------------------------
 
-type PageProps = {
+export interface PageProps {
     title: string,
-    ident: string,
-    children: React.Node,
-    side?: React.Node,
-    date: string,    
+    ident?: string,
+    children: JSX.Element[] | JSX.Element,
+    side?: JSX.Element[] | JSX.Element,
+    date: string,
 }
 
 export class NormalPage extends React.Component<PageProps> {
     sticky = null
 
-    constructor(props : PageProps) {
+    constructor(props: PageProps) {
         super(props)
         app.page = this // Horrible hack!!
     }
@@ -165,11 +154,9 @@ export class NormalPage extends React.Component<PageProps> {
         return (
             <React.Fragment>
                 <nav id="sidebar" className="side">
-                    <div className="sidebar__inner">
-                        <NavLink to="/"><span>Home</span><img src={require('../img/martian.png')} /></NavLink>
-                        <SideNav items={app.menu} ident={this.props.ident} />
-                        {this.props.side}
-                    </div>
+                    <NavLink to="/"><span>Home</span><img src={require('img/martian.png')} /></NavLink>
+                    <SideNav items={app.menu} ident={this.props.ident} />
+                    {this.props.side}
                 </nav>
                 <div className="body">
                     {this.props.children}

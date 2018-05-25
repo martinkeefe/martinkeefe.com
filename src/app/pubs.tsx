@@ -1,7 +1,7 @@
-import React, {Fragment, Component} from 'react'
-import {NormalPage} from 'app'
+import * as React from 'react'
+import {NormalPage} from '../app'
 
-import 'leaflet'
+import * as L from 'leaflet'
 
 import 'css/leaflet.css'
 //import '../../css/fontawesome-all.min.css'
@@ -52,7 +52,38 @@ var map_att = 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">
 
 //------------------------------------------------------------------------------
 
-class PubWatchMap extends Component {
+interface Pub {
+	hide?: boolean,
+	lat: number,
+	lon: number,
+	name: string,
+	status: string,
+	kind: string,
+	closed?: string,
+	prev?: string,
+	addr?: string,
+	town?: string,
+	posttown?: string,
+	postcode?: string,
+	url?: string,
+	img?: string,
+	gsv?: string,
+}
+
+interface MapState {
+	data: Pub[],
+	renderer: L.Renderer,
+	map: L.Map,
+	tile_layer: L.TileLayer,
+	circle: L.Circle,
+	solo: string,
+	checked: {open:boolean, limbo:boolean, dead:boolean, gone:boolean, bone:boolean},
+}
+
+class PubWatchMap extends React.Component<{},MapState> {
+	_mapNode: React.RefObject<HTMLDivElement> = React.createRef()
+	DOTS = []
+
 	constructor(props) {
 		super(props)
 		console.log('PubWatchMap','constructor')
@@ -67,9 +98,6 @@ class PubWatchMap extends Component {
 			solo: null,
 			checked: {open:true, limbo:true, dead:true, gone:true, bone:true},
 		}
-
-		this._mapNode = null
-		this.DOTS = []
 
 		this.draw_data = this.draw_data.bind(this)
 	}
@@ -116,11 +144,12 @@ class PubWatchMap extends Component {
 	    if (this.state.map)
 	    	return;
 
+		// @ts-ignore
 		const renderer = new L.LabelTextCollision({
 		  	collisionFlg : true
 		});
 
-		const map = L.map(this._mapNode, {
+		const map = L.map(this._mapNode.current, {
 			center: CENTRE,
 			maxBounds: CENTRE.toBounds(2*RADIUS + 5000),
 			zoom: 11,
@@ -151,7 +180,7 @@ class PubWatchMap extends Component {
 
   	render() {
 	    return (
-            <Fragment>
+            <React.Fragment>
 				<table className="gui">
 					<tbody>
 						<tr key="open">
@@ -187,8 +216,8 @@ class PubWatchMap extends Component {
 					</tbody>
 				</table>
 
-		        <div ref={node => this._mapNode = node} style={{height: '720px'}}/>
-            </Fragment>
+		        <div ref={this._mapNode} style={{height: '720px'}}/>
+            </React.Fragment>
 	    )
   	}
 
@@ -261,7 +290,8 @@ class PubWatchMap extends Component {
 					//    fillColor: COLOR[pub.status],
 					//    fillOpacity: 1,
 					//    weight: 15,
-					    radius: 0,
+						radius: 0,
+						// @ts-ignore
 					    text: pub.name,
 					    textColor: COLOR[pub.status],
 					}).addTo(this.state.map);
@@ -269,6 +299,7 @@ class PubWatchMap extends Component {
 					var circle;
 					if (pub.kind === 'bar') {
 						circle = L.marker([pub.lat, pub.lon], {
+							// @ts-ignore
 						    icon: L.BeautifyIcon.icon({
 							    iconShape: 'circle-dot',
 							    borderColor: COLOR[pub.status],
@@ -278,6 +309,7 @@ class PubWatchMap extends Component {
 					}
 					else if (pub.kind === 'hotel') {
 						circle = L.marker([pub.lat, pub.lon], {
+							// @ts-ignore
 						    icon: L.BeautifyIcon.icon({
 							    iconShape: 'rectangle-dot',
 							    borderColor: COLOR[pub.status],
@@ -287,6 +319,7 @@ class PubWatchMap extends Component {
 					}
 					else {
 						circle = L.marker([pub.lat, pub.lon], {
+							// @ts-ignore
 						    icon: L.BeautifyIcon.icon({
 							    iconShape: 'doughnut',
 							    borderColor: COLOR[pub.status],
@@ -304,6 +337,7 @@ class PubWatchMap extends Component {
 		});
 
 		if (this.state.renderer) {
+			// @ts-ignore
 			this.state.renderer._update();
 		}
     }
@@ -311,7 +345,7 @@ class PubWatchMap extends Component {
 
 //------------------------------------------------------------------------------
 
-function make_popup(pub) {
+function make_popup(pub:Pub): string {
 	var popup = '<b>'+pub.name+'</b>';
 
 	if (pub.url) {
