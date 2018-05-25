@@ -2,5 +2,8 @@ node_modules/
 dist/
 misc/
 *.cmd
+*.py
 .~lock*.*
 package-lock.json
+.npmrc
+.vscode
