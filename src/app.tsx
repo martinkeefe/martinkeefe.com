@@ -7,19 +7,20 @@ import { Provider } from 'react-redux'
 import createHistory from 'history/createBrowserHistory'
 
 import { NavLink, Redirect } from 'react-router-dom'
-import { renderRoutes } from 'react-router-config'
+import { renderRoutes, RouteConfig } from 'react-router-config'
 
 import { ConnectedRouter, routerReducer, routerMiddleware } from 'react-router-redux'
 
+import { StyleSheet, css } from 'aphrodite-jss'
 import StickySidebar from 'sticky-sidebar'
 
 //------------------------------------------------------------------------------
 
 export class App {
     el: Element
-    routes = []
-    menu = []
-    reducers = {}
+    routes: RouteConfig[] = []
+    menu: NavItem[] = []
+    reducers: ReducersMapObject = {}
     page = null
 
     constructor(elem_id: string = 'root') {
@@ -30,7 +31,7 @@ export class App {
         imp.default(this)
     }
 
-    add_nav(nav: Object) {
+    add_nav(nav: NavItem) {
         this.menu.push(nav)
     }
 
@@ -106,10 +107,10 @@ interface NavItem {
     href: string,
     text: string,
     ident: string,
-    sub?: Array<NavItem>
+    sub?: NavItem[]
 }
 interface  NavProps {
-    items: Array<NavItem>,
+    items: NavItem[],
     ident: string,
 }
 
@@ -132,6 +133,87 @@ class SideNav extends React.Component<NavProps> {
 
 //------------------------------------------------------------------------------
 
+const styles = StyleSheet.create({
+    side: {
+        '& img': {
+            visibility: 'hidden',
+            //width: '180px',
+            height: 0,
+            //margin: 0,
+            '@media (min-width: 43em)': {
+                visibility: 'visible !important',
+                width: '180px !important',
+                height: '180px !important',                        
+            }
+        },
+        '& span': {
+            //visibility: 'visible',
+            '@media (min-width: 43em)': {
+                visibility: 'hidden',                
+            }
+        },
+        '& h2, h3, h4': {
+            margin: '18px 0',
+        },
+        '& ul': {
+            listStyleType: 'none',
+            paddingLeft: '11px',
+            margin: 0,
+            '@media (min-width: 43em)': {
+                margin: '1em 0 0 0 !important',
+            },
+            '& li': {
+                marginTop: '0.25em',
+                marginBottom: '0.25em',
+                lineHeight: '1.25em',
+                marginLeft: '6px',
+                textIndent: '-9px',
+                fontSize: '16px',
+                '&:before': {
+                    content: '"»"',
+                    display: 'inline-block',
+                    width: '9px',
+                    fontSize: '20px',
+                },
+            },
+            '& ul': {
+
+                '@media (min-width: 43em)': {
+                    margin: 0,
+                }
+            }
+        },
+        '& ol': {
+            paddingLeft: '1em',
+            margin: '1em 0 0 0',
+            '& li': {
+                marginBottom: '0.5em',
+                lineHeight: '1.25em',
+                fontSize: '16px',
+            },                                                        
+        },  
+        '@media (min-width: 43em)': {
+            //visibility: 'visible',
+            width: '180px',
+            marginRight: '54px',              
+        },        
+    },
+    body: {
+        flex: 1,
+
+    },
+    update: {
+        color: 'rgb(98,95,111)', /* 10PB 4/2 */
+        marginTop: '1em',
+        //fontSize: '80%',
+        paddingTop: '0.25em',
+        borderTop: 'rgb(98,95,111) 1px solid',
+        '& span': {
+            fontStyle: 'italic',            
+        }    
+    },
+})
+
 export interface PageProps {
     title: string,
     ident?: string,
@@ -153,14 +235,14 @@ export class NormalPage extends React.Component<PageProps> {
 
         return (
             <React.Fragment>
-                <nav id="sidebar" className="side">
+                <nav id="sidebar" className={css(styles.side)}>
                     <NavLink to="/"><span>Home</span><img src={require('img/martian.png')} /></NavLink>
                     <SideNav items={app.menu} ident={this.props.ident} />
                     {this.props.side}
                 </nav>
-                <div className="body">
+                <div className={css(styles.body)}>
                     {this.props.children}
-                    <div className="update">Last update: {this.props.date}</div>
+                    <div className={css(styles.update)}>Last update: {this.props.date}</div>
                 </div>
             </React.Fragment>
         )

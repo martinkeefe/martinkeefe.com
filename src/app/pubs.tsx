@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { StyleSheet, css } from 'aphrodite-jss'
 import {NormalPage} from '../app'
 
 import * as L from 'leaflet'
@@ -179,9 +180,19 @@ class PubWatchMap extends React.Component<{},MapState> {
   	}
 
   	render() {
+		const styles = StyleSheet.create({
+			gui: {
+				margin: '1em 0',
+			},			
+			'& td': {
+				padding: '0 0.5em',
+				verticalAlign: 'top',
+			},
+		})
+				
 	    return (
             <React.Fragment>
-				<table className="gui">
+				<table className={css(styles.gui)}>
 					<tbody>
 						<tr key="open">
 							<td><span style={{color: COLOR['open']}}>Alive</span></td>

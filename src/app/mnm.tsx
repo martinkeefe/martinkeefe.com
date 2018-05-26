@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { StyleSheet, css } from 'aphrodite-jss'
 import { App, NormalPage } from '../app'
 
 interface MNM {
@@ -32,13 +33,19 @@ function s3_src(mnm, i, ext) {
     return `${S3}mnm${mnm.num}/${trk_num}.${ext}`
 }
 
+const GTR = 18
+const px = n => n+'px'
+
 //------------------------------------------------------------------------------
 
 interface Track {
     art_name: string,
     trk_name: string,
+    trk_info?: string,
     alb_name: string,
+    alb_fmt?: string,
     alb_year: string,
+    xtra?: string,
 }
 interface MondayProps {
     match: { params: { mnm: string } }
@@ -78,14 +85,22 @@ class PlayList extends React.Component<ListProps, ListState> {
     muted = false
 
     render() {
+        const styles = StyleSheet.create({
+            playlist: {
+                margin: `${px(-GTR)} 0 ${px(GTR)} ${px(-GTR)}`, // gutter
+                '@media (min-width: 43em)': {
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                },
+            },
+        })
+
         const items = this.props.trks.map((trk, i) => {
             const trk_num = ('0' + (i + 1)).substr(-2)
             const img = s3_src(this.props.mnm, i, 'jpg')
             const src = s3_src(this.props.mnm, i, 'mp3')
 
             return <PlayListItem key={trk_num}
-                //list={this} 
-                //mnm={this.props.mnm} 
                 num={trk_num}
                 trk={trk}
                 src={src}
@@ -99,7 +114,7 @@ class PlayList extends React.Component<ListProps, ListState> {
         })
 
         return (
-            <div className="playlist">
+            <div className={css(styles.playlist)}>
                 {items}
             </div>
         )
@@ -139,18 +154,65 @@ class PlayListItem extends React.Component<ItemProps> {
     audio: React.RefObject<HTMLAudioElement> = React.createRef()
 
     render() {
-        const klass = 'item' + (this.props.active ? ' active' : '')
-        const audio = <audio controls onEnded={this.props.onEnded} onVolumeChange={this.props.onVolumeChange} src={this.props.src} ref={this.audio}></audio>
+        const { num, trk, img, src, active, onEnded, onClick, onVolumeChange } = this.props
+
+        const styles = StyleSheet.create({
+            wrapper: {
+                width: '100%',
+                '@media (min-width: 43em)': {
+                    width: '50%',
+                }
+            },
+            item: {
+                margin: `${px(GTR)} 0 0 ${px(GTR)}`, /* gutter */
+                position: 'relative',
+                display: 'flex',
+                '& img': {
+                    width: '128px',
+                    height: '128px',                            
+                },
+            },
+            data: {
+                flex: 2,
+                paddingLeft: px(GTR/2),                            
+                background: active ? 'blue' : 'none',
+                '& p': {
+                    margin: 0,
+                    textAlign: 'left',
+                },
+            },
+            audio: {
+                width: '100%',
+                position: 'absolute',
+                left: 0,
+                top: px(-GTR/2),
+            },
+            xtra: {
+                paddingTop: '6px',
+                marginLeft: px(GTR),                            
+                fontSize: '16px',
+                background: 'rgb(64,60,75)',
+            },
+        })
+
+        const klass = 'item' + (active ? ' active' : '')
+        const audio = <audio className={css(styles.audio)} controls onEnded={onEnded} onVolumeChange={onVolumeChange} src={src} ref={this.audio}></audio>
         return (
-            <div className={klass} onClick={this.props.onClick}>
-                <img src={this.props.img} />
-                <div className="data">
-                    <p><big>{this.props.num}</big></p>
-                    <p><b>{this.props.trk.art_name}</b></p>
-                    <p>“{this.props.trk.trk_name}”</p>
-                    <p><i>{this.props.trk.alb_name}</i>, {this.props.trk.alb_year}</p>
+            <div className={css(styles.wrapper)}>
+                <div className={css(styles.item)} onClick={onClick}>
+                    <img src={img} />
+                    <div className={css(styles.data)}>
+                        <p><big>{num}</big></p>
+                        <p><b>{trk.art_name}</b></p>
+                        <p>“{trk.trk_name}” {trk.trk_info ? `(${trk.trk_info})` : ''}</p>
+                        <p><i>{trk.alb_name}</i>{trk.alb_fmt ? ` [${trk.alb_fmt}],` : ','} {trk.alb_year}</p>
+                    </div>
+                    {active ? audio : null}
                 </div>
-                {this.props.active ? audio : null}
+                {active && trk.xtra
+                    ? <div  className={css(styles.xtra)} dangerouslySetInnerHTML={{ __html: trk.xtra }}></div>
+                    : null
+                }
             </div>
         )
     }
@@ -160,7 +222,13 @@ class PlayListItem extends React.Component<ItemProps> {
             this.audio.current.src = this.props.src
             this.audio.current.volume = this.props.volume
             this.audio.current.muted = this.props.muted
-            this.audio.current.play()
+            // https://developers.google.com/web/updates/2017/09/autoplay-policy-changes
+            const promise = this.audio.current.play()
+            if (promise) {
+                promise
+                    .then(() => null)
+                    .catch(error => console.warn(error))                
+            }
         }
     }
 

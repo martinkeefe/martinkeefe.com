@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { StyleSheet, css } from 'aphrodite-jss'
 import app /* Horrible hack!! */, { NormalPage } from '../app'
-import { FloatProperty, CursorProperty, TextTransformProperty } from 'csstype';
+//import { FloatProperty, CursorProperty, TextTransformProperty } from 'csstype';
 
 //------------------------------------------------------------------------------
 
@@ -25,6 +26,63 @@ const COLOR = {
     dislike: '#F80',
     hate: '#D00',
 }
+
+const styles = StyleSheet.create({
+    picks: {
+        '& td': {
+            padding: '0.25em',
+            verticalAlign: 'top',            
+            '& .links': {
+                fontSize: '15px',
+                width: '66px',
+            },
+        },
+        '& p.small': {
+            margin: 0,
+            fontSize: '15px',
+            lineHeight: '20px',
+            paddingBottom: '0.75em', 
+        },
+    },
+    btn: {
+        float: 'right',
+        color: 'rgb(54,50,65)',
+        background: 'rgb(173,167,228)',
+        padding: '2px 6px',
+        fontSize: '13px',
+        fontFamily: 'Lato, sans-serif',
+        cursor: 'pointer',
+        textTransform: 'uppercase',
+        borderRadius: '9px',
+        marginLeft: '6px',
+    },
+    help: {
+        padding: '2px 6px',
+        background: 'rgb(64,60,75)',
+        borderRadius: '9px',
+        '& dt': {
+            float: 'left',
+            clear: 'left',
+            width: '50px',            
+        },
+        '& dd': {
+            margin: '0 0 0 68px',
+            padding: '0 0 0.5em 0',
+        },
+        '&:first-child': {
+            marginTop: 0,
+        },
+        '&:last-child': {
+            marginBottom: 0,
+        },
+    },
+    loading: {
+
+    },
+    error: {
+
+    },
+})
 
 //------------------------------------------------------------------------------
 
@@ -97,10 +155,10 @@ class FilmPicks extends React.Component<FilmPicksProps> {
         const { data, loading, error } = this.props.films
 
         if (loading) {
-            return <div className="container"><h3>Loading...</h3></div>
+            return <div className={css(styles.loading)}><h3>Loading...</h3></div>
         }
         else if (error) {
-            return <div className="alert alert-danger">Error: {error.message}</div>
+            return <div className={css(styles.error)}>Error: {error.message}</div>
         }
 
         let updated = ''
@@ -172,7 +230,7 @@ class FilmPicks extends React.Component<FilmPicksProps> {
         return (
             <React.Fragment>
                 <p>{updated ? `Last data update: ${updated.substr(0, 10)}` : null}</p>
-                <table ref={this.table} className="films">
+                <table ref={this.table} className={css(styles.picks)}>
                     <tbody>
                         {picks}
                     </tbody>
@@ -204,38 +262,38 @@ class FilmPickPage extends React.Component<PageProps,PageState> {
     render() {
         const year = this.props.match.params.year
 
-        const style = {
-            help: {
-                btn: {
-                    float: 'right' as FloatProperty,
-                    color: 'rgb(54,50,65)',
-                    background: 'rgb(173,167,228)',
-                    padding: '2px 6px',
-                    fontSize: '13px',
-                    fontFamily: 'Lato, sans-serif',
-                    cursor: 'pointer' as CursorProperty,
-                    textTransform: 'uppercase' as TextTransformProperty,
-                    borderRadius: '9px',
-                    marginLeft: '6px',
-                },
-                text: {
-                    padding: '2px 6px',
-                    background: 'rgb(64,60,75)',
-                    borderRadius: '9px',
-                }
-            }
-        }
+        // const style = {
+        //     help: {
+        //         btn: {
+        //             float: 'right' as FloatProperty,
+        //             color: 'rgb(54,50,65)',
+        //             background: 'rgb(173,167,228)',
+        //             padding: '2px 6px',
+        //             fontSize: '13px',
+        //             fontFamily: 'Lato, sans-serif',
+        //             cursor: 'pointer' as CursorProperty,
+        //             textTransform: 'uppercase' as TextTransformProperty,
+        //             borderRadius: '9px',
+        //             marginLeft: '6px',
+        //         },
+        //         text: {
+        //             padding: '2px 6px',
+        //             background: 'rgb(64,60,75)',
+        //             borderRadius: '9px',
+        //         }
+        //     }
+        // }
 
         return (
             <NormalPage title={'Martin’s Film Picks - ' + year} date='2018-05-19' ident='film-pick'>
                 <h1>{year} Film Picks</h1>
                 <p>This is my selection of films I might want to watch. It is <i>not</i> any sort of value judgment or recommendation. </p>
-                <span style={style.help.btn} onClick={() => this.setState({ help: !this.state.help })}>{this.state.help ? 'Hide' : 'Show'} Help</span>
+                <span className={css(styles.btn)} onClick={() => this.setState({ help: !this.state.help })}>{this.state.help ? 'Hide' : 'Show'} Help</span>
 
                 {this.state.help
-                    ? <div style={style.help.text} className="help">
+                    ? <div className={css(styles.help)}>
                         <p>Here is a key to the links in the left-hand column:</p>
-                        <dl className="films">
+                        <dl>
                             <dt><img src={IMG.imdb} height="16" /></dt>
                             <dd>Goes to film’s page at IMDB.</dd>
                             <dt><img src={IMG.youtube} height="16" /></dt>

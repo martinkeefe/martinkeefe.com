@@ -2,6 +2,9 @@
   "name": "martinkeefe.com",
   "version": "0.1.0",
   "description": "My web site",
+  "author": "Martin Keefe",
+  "repository": "https://github.com/martinkeefe/martinkeefe.com.git",
+  "license": "ISC",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,21 +12,11 @@
     "watch": "start node_modules\\.bin\\webpack --progress --colors --watch",
     "serve": "start node_modules\\.bin\\webpack-dev-server --progress --colors"
   },
-  "author": "Martin Keefe",
-  "repository": "https://github.com/martinkeefe/martinkeefe.com.git",
   "dependencies": {
-    "@types/history": "^4.6.2",
-    "@types/react": "^16.3.14",
-    "@types/react-dom": "^16.0.5",
-    "@types/react-redux": "^6.0.0",
-    "@types/react-router-config": "^1.0.6",
-    "@types/react-router-dom": "^4.2.6",
-    "@types/react-router-redux": "^5.0.14",
-    "aphrodite": "^2.2.1",
+    "aphrodite-jss": "^2.0.0",
     "babel-polyfill": "^6.26.0",
     "history": "^4.7.2",
     "leaflet": "^1.2.0",
-    "prop-types": "^15.6.1",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "react-leaflet": "^1.9.1",
@@ -36,7 +29,14 @@
     "sticky-sidebar": "^3.3.1"
   },
   "devDependencies": {
+    "@types/history": "^4.6.2",
     "@types/leaflet": "^1.2.7",
+    "@types/react": "^16.3.14",
+    "@types/react-dom": "^16.0.5",
+    "@types/react-redux": "^6.0.0",
+    "@types/react-router-config": "^1.0.6",
+    "@types/react-router-dom": "^4.2.6",
+    "@types/react-router-redux": "^5.0.14",
     "awesome-typescript-loader": "^5.0.0",
     "babel-cli": "^6.26.0",
     "babel-eslint": "^8.2.3",
@@ -60,6 +60,5 @@
     "url-loader": "^1.0.1",
     "webpack": "^4.8.3",
     "webpack-cli": "^2.1.4"
-  },
-  "license": "ISC"
+  }
 }
